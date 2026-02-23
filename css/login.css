@@ -1,0 +1,251 @@
+:root {
+    --toss-blue: #3182F6;
+    --toss-blue-hover: #1B64DA;
+    --text-primary: #191F28;
+    --text-secondary: #4E5968;
+    --text-placeholder: #B0B8C1;
+    --bg-white: #FFFFFF;
+    --bg-input: #FFFFFF;
+    --border-default: #E5E8EB;
+    --border-focus: #3182F6;
+    --kakao-bg: #FEE500;
+    --naver-bg: #03C75A;
+    --radius-lg: 12px;
+    --radius-md: 8px;
+    --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-base);
+    color: var(--text-primary);
+    background-color: var(--bg-white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+input {
+    font-family: inherit;
+}
+
+/* Layout */
+.header {
+    padding: 16px 24px;
+}
+
+.header__inner {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.header__logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--toss-blue);
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px 80px 24px;
+}
+
+.container {
+    width: 100%;
+    max-width: 460px;
+}
+
+/* Typography */
+.title-group {
+    margin-bottom: 48px;
+}
+
+.title-group__main {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.title-group__sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+/* Forms */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.input-field {
+    width: 100%;
+    height: 56px;
+    padding: 0 16px;
+    font-size: 16px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-input);
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-field:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 1px var(--border-focus);
+}
+
+.input-field::placeholder {
+    color: var(--text-placeholder);
+}
+
+/* Checkbox & Links */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 16px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.checkbox-input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--toss-blue);
+    cursor: pointer;
+}
+
+.text-link {
+    color: var(--text-secondary);
+    transition: color 0.2s;
+}
+
+.text-link:hover {
+    color: var(--text-primary);
+}
+
+.link-primary {
+    color: var(--toss-blue);
+    font-weight: 600;
+}
+
+.link-primary:hover {
+    text-decoration: underline;
+}
+
+/* Buttons */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 56px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--toss-blue);
+    color: white;
+    margin-top: 24px;
+}
+
+.btn-primary:hover {
+    background-color: var(--toss-blue-hover);
+}
+
+.btn-primary:disabled {
+    background-color: #B0B8C1;
+    cursor: not-allowed;
+}
+
+/* Footer Section */
+.footer-text {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+/* Social Login */
+.divider {
+    margin-top: 48px;
+    position: relative;
+    text-align: center;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--border-default);
+    z-index: 0;
+}
+
+.divider__text {
+    position: relative;
+    padding: 0 16px;
+    background-color: var(--bg-white);
+    color: var(--text-placeholder);
+    font-size: 14px;
+    z-index: 1;
+}
+
+.social-buttons {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-social {
+    background-color: white;
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.btn-social:hover {
+    background-color: #F9FAFB;
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
