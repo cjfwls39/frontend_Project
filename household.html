@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>가계부</title>
+    <link rel="stylesheet" href="css/GlobalStyle.css" />
+    <link rel="stylesheet" href="css/household.css" />
+    <script src="js/household.js" defer></script>
+  </head>
+  <body>
+    <main class="household-container">
+      <header class="household-header">
+        <nav class="menu">
+          <ul>
+            <li><a href="index.html">메인</a></li>
+            <li><a href="calender.html">캘린더</a></li>
+            <li><a href="household.html">가계부</a></li>
+          </ul>
+        </nav>
+        <div class="header-title">가계부 대시보드</div>
+      </header>
+
+      <aside class="household-left">
+        <section class="summary-card">
+          <div class="summary-head">
+            <button type="button" class="month-btn" id="prevMonthBtn" aria-label="이전 달">
+              &#8249;
+            </button>
+            <h2 id="monthLabel">2026년 2월</h2>
+            <button type="button" class="month-btn" id="nextMonthBtn" aria-label="다음 달">
+              &#8250;
+            </button>
+          </div>
+          <p class="summary-label">이번 달 지출</p>
+          <p class="summary-value expense" id="expenseTotalLabel">0원</p>
+          <p class="summary-label">이번 달 수입</p>
+          <p class="summary-value income" id="incomeTotalLabel">0원</p>
+          <p id="monthDeltaLabel" class="delta-text">지난달과 비교 중</p>
+        </section>
+
+        <section class="insight-card">
+          <h3>소비 인사이트</h3>
+          <p id="topCategoryLabel">가장 많이 쓴 카테고리를 분석 중입니다.</p>
+        </section>
+
+        <section class="legend-card">
+          <h3>표시 기준</h3>
+          <div class="legend-row"><span class="dot income"></span> 수입</div>
+          <div class="legend-row"><span class="dot expense"></span> 지출</div>
+          <div class="legend-row"><span class="dot net"></span> 순이동(수입-지출)</div>
+        </section>
+      </aside>
+
+      <section class="household-right">
+        <div class="calendar-header-row">
+          <h2 id="calendarTitle">2026년 2월 지출/수입 캘린더</h2>
+        </div>
+        <div class="week-header">
+          <span>일</span>
+          <span>월</span>
+          <span>화</span>
+          <span>수</span>
+          <span>목</span>
+          <span>금</span>
+          <span>토</span>
+        </div>
+        <div id="calendarDays" class="calendar-days"></div>
+      </section>
+    </main>
+
+    <div id="dayPopupBackdrop" class="day-popup-backdrop" aria-hidden="true"></div>
+    <aside id="dayPopup" class="day-popup" aria-hidden="true" aria-label="당일 거래 목록">
+      <header class="day-popup-header">
+        <div>
+          <p class="day-popup-caption">선택한 날짜 거래</p>
+          <h3 id="dayPopupTitle">날짜를 선택하세요</h3>
+        </div>
+        <button type="button" id="closeDayPopupBtn" class="close-popup-btn" aria-label="팝업 닫기">
+          닫기
+        </button>
+      </header>
+      <div class="day-popup-summary">
+        <p id="dayPopupIncome">수입 0원</p>
+        <p id="dayPopupExpense">지출 0원</p>
+      </div>
+      <ul id="dayTransactionList" class="day-transaction-list"></ul>
+    </aside>
+  </body>
+</html>
