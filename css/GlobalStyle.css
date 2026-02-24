@@ -9,8 +9,8 @@
   --color-primary-soft: #a3a1a1;    
   --color-secondary: #8b8687;
   
-  --color-success: #5c6e58;         
-  --color-danger: #8c5a5a;          
+  --color-success: blue;         
+  --color-danger: red;          
   
   /* --- 배경색 (Backgrounds) --- */
   --bg-main: #e3dede;               

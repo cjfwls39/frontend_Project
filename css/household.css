@@ -394,7 +394,7 @@ body {
 }
 
 .day-number.is-saturday {
-  color: var(--color-secondary);
+  color: blue;
 }
 
 .cell-value {

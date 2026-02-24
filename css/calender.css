@@ -261,7 +261,7 @@
 }
 
 .is-sun { color: var(--color-danger) !important; }
-.is-sat { color: var(--color-secondary) !important; }
+.is-sat { color: blue !important; }
 
 /* 오늘 날짜 표시 (미니) */
 .mini-days div.is-today {
