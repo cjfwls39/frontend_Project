@@ -46,6 +46,7 @@ body {
 }
 
 .summary-card,
+.entry-card,
 .insight-card,
 .legend-card {
   background: #fff;
@@ -112,6 +113,7 @@ body {
 }
 
 .insight-card h3,
+.entry-card h3,
 .legend-card h3 {
   font-size: 14px;
 }
@@ -121,6 +123,61 @@ body {
   margin-top: 7px;
   color: #4e5968;
   font-size: 13px;
+}
+
+.tx-form {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tx-field span {
+  font-size: 12px;
+  color: #6b7684;
+}
+
+.tx-field input,
+.tx-field select {
+  height: 34px;
+  border: 1px solid #d1d6db;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.tx-submit-btn {
+  margin-top: 4px;
+  border: none;
+  height: 36px;
+  border-radius: 8px;
+  background: #3182f6;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tx-form-message {
+  min-height: 18px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #6b7684;
+}
+
+.tx-form-message.is-error {
+  color: #d9363e;
+}
+
+.tx-form-message.is-success {
+  color: #2b6ce0;
 }
 
 .dot {

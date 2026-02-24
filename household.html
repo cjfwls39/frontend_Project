@@ -6,6 +6,7 @@
     <title>가계부</title>
     <link rel="stylesheet" href="css/GlobalStyle.css" />
     <link rel="stylesheet" href="css/household.css" />
+    <script src="js/transactionStorage.js" defer></script>
     <script src="js/household.js" defer></script>
   </head>
   <body>
@@ -37,6 +38,33 @@
           <p class="summary-label">이번 달 수입</p>
           <p class="summary-value income" id="incomeTotalLabel">0원</p>
           <p id="monthDeltaLabel" class="delta-text">지난달과 비교 중</p>
+        </section>
+
+        <section class="entry-card">
+          <h3>거래 추가</h3>
+          <form id="txForm" class="tx-form">
+            <label class="tx-field">
+              <span>날짜</span>
+              <input id="txDateInput" name="date" type="date" required />
+            </label>
+            <label class="tx-field">
+              <span>유형</span>
+              <select id="txTypeInput" name="type" required>
+                <option value="expense">지출</option>
+                <option value="income">수입</option>
+              </select>
+            </label>
+            <label class="tx-field">
+              <span>카테고리</span>
+              <select id="txCategoryInput" name="category" required></select>
+            </label>
+            <label class="tx-field">
+              <span>금액</span>
+              <input id="txAmountInput" name="amount" type="number" min="1" step="1" placeholder="0" required />
+            </label>
+            <button class="tx-submit-btn" type="submit">저장</button>
+          </form>
+          <p id="txFormMessage" class="tx-form-message" aria-live="polite"></p>
         </section>
 
         <section class="insight-card">

@@ -2,27 +2,6 @@ const now = new Date();
 let year = now.getFullYear();
 let month = now.getMonth(); // 0~11
 
-const y = now.getFullYear();
-const m = now.getMonth() + 1;
-const prev = new Date(y, now.getMonth() - 1, 1);
-const py = prev.getFullYear();
-const pm = prev.getMonth() + 1;
-
-const data = [
-  { date: `${y}-${String(m).padStart(2, "0")}-01`, type: "expense", amount: 369800, category: "생활" },
-  { date: `${y}-${String(m).padStart(2, "0")}-03`, type: "expense", amount: 66900, category: "식비" },
-  { date: `${y}-${String(m).padStart(2, "0")}-07`, type: "income", amount: 1456000, category: "급여" },
-  { date: `${y}-${String(m).padStart(2, "0")}-08`, type: "income", amount: 100000, category: "용돈" },
-  { date: `${y}-${String(m).padStart(2, "0")}-08`, type: "expense", amount: 16200, category: "카페" },
-  { date: `${y}-${String(m).padStart(2, "0")}-10`, type: "expense", amount: 990000, category: "의료/건강" },
-  { date: `${y}-${String(m).padStart(2, "0")}-14`, type: "income", amount: 85800, category: "환급" },
-  { date: `${y}-${String(m).padStart(2, "0")}-16`, type: "expense", amount: 65000, category: "쇼핑" },
-  { date: `${y}-${String(m).padStart(2, "0")}-19`, type: "expense", amount: 88000, category: "식비" },
-  { date: `${y}-${String(m).padStart(2, "0")}-23`, type: "income", amount: 250000, category: "부수입" },
-  { date: `${py}-${String(pm).padStart(2, "0")}-02`, type: "expense", amount: 1900000, category: "의료/건강" },
-  { date: `${py}-${String(pm).padStart(2, "0")}-11`, type: "income", amount: 1350000, category: "급여" },
-];
-
 const monthLabel = document.getElementById("monthLabel");
 const calendarTitle = document.getElementById("calendarTitle");
 const expenseLabel = document.getElementById("expenseTotalLabel");
@@ -42,6 +21,18 @@ const popupExpense = document.getElementById("dayPopupExpense");
 const popupList = document.getElementById("dayTransactionList");
 const popupCloseBtn = document.getElementById("closeDayPopupBtn");
 
+const txForm = document.getElementById("txForm");
+const txDateInput = document.getElementById("txDateInput");
+const txTypeInput = document.getElementById("txTypeInput");
+const txCategoryInput = document.getElementById("txCategoryInput");
+const txAmountInput = document.getElementById("txAmountInput");
+const txFormMessage = document.getElementById("txFormMessage");
+
+const CATEGORY_MAP = {
+  expense: ["식비", "카페", "교통", "쇼핑", "주거/통신", "의료/건강", "여가", "기타"],
+  income: ["급여", "부수입", "용돈", "환급", "금융수익", "기타"],
+};
+
 function splitDate(text) {
   const p = text.split("-");
   return { year: Number(p[0]), month: Number(p[1]), day: Number(p[2]) };
@@ -51,11 +42,17 @@ function won(n) {
   return `${Math.abs(n).toLocaleString("ko-KR")}원`;
 }
 
+function getAllTransactions() {
+  if (!window.TransactionStorage) return [];
+  return window.TransactionStorage.getAll();
+}
+
 function getMonthList(targetYear, targetMonth) {
+  const all = getAllTransactions();
   const list = [];
-  for (let i = 0; i < data.length; i += 1) {
-    const d = splitDate(data[i].date);
-    if (d.year === targetYear && d.month === targetMonth + 1) list.push(data[i]);
+  for (let i = 0; i < all.length; i += 1) {
+    const d = splitDate(all[i].date);
+    if (d.year === targetYear && d.month === targetMonth + 1) list.push(all[i]);
   }
   return list;
 }
@@ -122,13 +119,13 @@ function renderHeader(list) {
   } else if (diff < 0) {
     deltaLabel.innerHTML = `지난달보다 <span class="delta-down">${won(diff)}</span> 덜 지출`;
   } else {
-    deltaLabel.textContent = "지난달과 비슷한 지출";
+    deltaLabel.textContent = "지난달과 같은 지출";
   }
 
   if (top) {
     topCategoryLabel.textContent = `가장 많이 쓴 항목: ${top.name} (${won(top.amount)})`;
   } else {
-    topCategoryLabel.textContent = "이번 달 소비 데이터 없음";
+    topCategoryLabel.textContent = "이번 달 소비 데이터가 없습니다.";
   }
 }
 
@@ -232,6 +229,88 @@ function render() {
   renderCalendar(list);
 }
 
+function showFormMessage(text, isError) {
+  txFormMessage.textContent = text;
+  txFormMessage.classList.toggle("is-error", Boolean(isError));
+  txFormMessage.classList.toggle("is-success", !isError && text.length > 0);
+}
+
+function setDefaultFormDate() {
+  const todayText = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+  txDateInput.value = todayText;
+}
+
+function updateCategoryOptions(type) {
+  if (!txCategoryInput) return;
+  const list = CATEGORY_MAP[type] || CATEGORY_MAP.expense;
+
+  txCategoryInput.innerHTML = "";
+  for (let i = 0; i < list.length; i += 1) {
+    const option = document.createElement("option");
+    option.value = list[i];
+    option.textContent = list[i];
+    txCategoryInput.appendChild(option);
+  }
+}
+
+function bindTransactionForm() {
+  if (!txForm) return;
+
+  setDefaultFormDate();
+  txTypeInput.value = "expense";
+  updateCategoryOptions(txTypeInput.value);
+
+  txTypeInput.addEventListener("change", () => {
+    updateCategoryOptions(txTypeInput.value);
+  });
+
+  txForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const amount = Number(txAmountInput.value);
+    const date = txDateInput.value;
+    const type = txTypeInput.value;
+    const category = txCategoryInput.value.trim();
+
+    if (!date) {
+      showFormMessage("날짜를 선택해 주세요.", true);
+      return;
+    }
+    if (!Number.isFinite(amount) || amount <= 0) {
+      showFormMessage("금액은 1원 이상 입력해 주세요.", true);
+      return;
+    }
+    if (type !== "income" && type !== "expense") {
+      showFormMessage("유형이 올바르지 않습니다.", true);
+      return;
+    }
+    if (!category) {
+      showFormMessage("카테고리를 선택해 주세요.", true);
+      return;
+    }
+
+    try {
+      window.TransactionStorage.add({
+        date,
+        type,
+        amount,
+        category,
+      });
+      showFormMessage("거래가 저장되었습니다.", false);
+      txAmountInput.value = "";
+      updateCategoryOptions(txTypeInput.value);
+      closePopup();
+      render();
+    } catch (error) {
+      showFormMessage("저장에 실패했습니다. 입력값을 확인해 주세요.", true);
+    }
+  });
+}
+
 prevBtn.addEventListener("click", () => {
   month -= 1;
   if (month < 0) {
@@ -263,4 +342,5 @@ calendarDays.addEventListener("click", (e) => {
 popupCloseBtn.addEventListener("click", closePopup);
 popupBackdrop.addEventListener("click", closePopup);
 
+bindTransactionForm();
 render();
