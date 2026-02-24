@@ -1,4 +1,6 @@
-/* 전체 컨테이너 레이아웃 */
+/* --- calender.css (Modern Stone & Charcoal Edition) --- */
+
+/* 전체 컨테이너: 따뜻한 그레이 배경(#e3dede) */
 .calender-container {
   width: 100%;
   height: 100vh;
@@ -16,159 +18,204 @@
   width: 100%;
   height: var(--header-height);
   display: flex;
-  justify-content: space-between; /* 양 끝 정렬 (메뉴-시계) */
+  justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-  background-color: var(--bg-header); /* 슬레이트 100 테마 배경 */
-  border-bottom: 1px solid var(--border-main);
-  z-index: 10;
+  padding: 0 30px;
+  background-color: var(--bg-header); /* #333030 */
+  box-shadow: var(--shadow-md);
+  z-index: 20;
 }
 
-/* 상단 메뉴 버튼 */
 .menu ul {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   list-style: none;
 }
 
 .menu ul li {
-  background-color: var(--bg-main); /* 헤더 배경과 대비되는 흰색 */
-  border: 1px solid var(--border-main);
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-main);
+  transition: all 0.3s ease;
 }
 
 .menu ul li a {
   display: block;
-  padding: 8px 18px;
+  padding: 8px 22px;
   text-decoration: none;
-  color: var(--text-sub);
-  font-weight: 600;
+  color: var(--text-white);
+  font-weight: 500;
   font-size: 14px;
 }
 
 .menu ul li:hover {
-  background-color: var(--color-primary); /* 인디고 블루 포인트 */
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft); /* #a3a1a1 */
+  border-color: var(--color-primary-soft);
 }
 
-.menu ul li:hover a {
-  color: var(--text-white);
-}
-
-/* 헤더 실시간 시계 */
 .live-clock {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-main);
-  background: var(--bg-main);
-  border: 1px solid var(--border-main);
-  padding: 6px 15px;
-  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-white);
+  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
 }
 
-/* --- 좌측 사이드바 (미니 달력 영역) --- */
+/* --- 좌측 사이드바 (미니 달력) --- */
 .calendar-left {
   width: var(--sidebar-width);
   height: 100%;
-  padding: 20px;
+  padding: 30px 20px;
   flex-shrink: 0;
-  background-color: var(--bg-sub); /* 슬레이트 50 연한 배경 */
-  border-right: 1px solid var(--border-main);
+  background-color: var(--bg-sub); /* 화이트 */
+  border-right: 1px solid var(--border-light);
 }
 
-/* --- 우측 메인 영역 (대형 달력 영역) --- */
+/* --- 우측 메인 영역 (대형 달력) --- */
 .calendar-right {
   flex-grow: 1;
   height: 100%;
-  padding: 25px;
-  background-color: var(--bg-main); /* 완전한 흰색 배경 */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 달력 컨트롤러 (년/월 표시 및 이동 버튼) */
+/* 컨트롤러 영역 */
 .nav-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 15px;
-  white-space: nowrap;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  padding: 0 10px;
 }
 
 .calendar-Title-Year {
-  min-width: 150px;
-  text-align: center;
-  font-weight: 700;
-  color: var(--text-main);
-  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main); /* #333030 */
+  font-size: 1.6rem;
+  letter-spacing: -1px;
+}
+
+.nav-btn-group {
+    display: flex;
+    gap: 8px;
 }
 
 .nav-btn {
-  background: var(--bg-main);
+  background: var(--bg-sub);
   border: 1px solid var(--border-main);
-  padding: 5px 12px;
+  padding: 8px 16px;
   cursor: pointer;
-  border-radius: 6px;
-  color: var(--text-sub);
+  border-radius: 8px;
+  color: var(--text-main);
   transition: 0.2s;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .nav-btn:hover {
-  background: var(--bg-element);
-  color: var(--text-main);
+  background: var(--color-primary);
+  color: var(--text-white);
 }
 
-/* --- 그리드 공용 스타일 --- */
-.mini-weeks, .mini-days, .full-weeks, .full-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-}
-
-/* 요일 표시부 */
-.mini-weeks div, .full-weeks div {
-  font-weight: 700;
-  font-size: 12px;
-  padding: 10px 0;
-  color: var(--text-muted); /* 보조 텍스트 색상 */
-}
-
-/* 미니 달력 날짜 */
-.mini-days div {
-  font-size: 13px;
-  padding: 10px 0;
-  color: var(--text-sub);
-}
-
-/* --- 대형 달력 내부 디테일 --- */
+/* --- 대형 달력 카드 스타일 (통합된 느낌) --- */
 .full-calendar-wrapper {
+  flex-grow: 1;
+  background: var(--bg-sub); /* 화이트 카드 */
+  border-radius: var(--radius-main);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  border: 1px solid var(--border-light);
 }
 
 .full-weeks {
-  background: var(--bg-sub);
-  border: 1px solid var(--border-main);
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: var(--bg-main); /* 연그레이 배경으로 헤더 구분 */
+  border-bottom: 1px solid var(--border-light);
+}
+
+.full-weeks div {
+  padding: 15px 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted); /* #8b8687 */
+  text-transform: uppercase;
 }
 
 .full-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   grid-auto-rows: 1fr;
   flex-grow: 1;
-  border-left: 1px solid var(--border-main);
-  border-top: 1px solid var(--border-main);
 }
 
 .full-days div {
-  border-right: 1px solid var(--border-main);
-  border-bottom: 1px solid var(--border-main);
-  padding: 10px;
-  position: relative;
+  padding: 15px;
+  border-right: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
   color: var(--text-main);
   font-weight: 500;
-  min-height: 80px; /* 대형 달력 칸 확보 */
+  transition: background 0.2s ease;
+}
+
+.full-days div:nth-child(7n) { border-right: none; }
+.full-days div:hover { background-color: rgba(227, 222, 222, 0.3); }
+
+/* --- 미니 달력 스타일 --- */
+.mini-weeks, .mini-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.mini-weeks div {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 10px 0;
+    color: var(--text-muted);
+}
+
+.mini-days div {
+    font-size: 12px;
+    padding: 12px 0;
+    cursor: pointer;
+    border-radius: 50%;
+    margin: 2px;
+    transition: 0.2s;
+}
+
+/* --- 상태별 클래스 (변수 기반) --- */
+
+/* 일요일 */
+.is-sun { color: var(--color-danger) !important; }
+
+/* 토요일 */
+.is-sat { color: var(--color-secondary) !important; }
+
+/* 오늘 날짜 (Charcoal & Stone 포인트) */
+.is-today {
+  background-color: var(--color-primary) !important; /* #333030 */
+  color: var(--text-white) !important;
+  font-weight: 700 !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 큰 달력에서의 오늘 날짜 추가 디테일 */
+.full-days div.is-today {
+    border-radius: 0; /* 큰 달력은 칸 전체를 채우거나 유지 */
+    position: relative;
+}
+
+.full-days div.is-today::after {
+    content: 'TODAY';
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 9px;
+    opacity: 0.7;
 }
