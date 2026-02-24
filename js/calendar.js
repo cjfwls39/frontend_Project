@@ -5,12 +5,13 @@ const nextButtons = document.querySelectorAll(".btn-next");
 const miniDays = document.querySelector("#miniDays");
 const fullDays = document.querySelector("#fullDays");
 
-// 모달 및 폼 요소
+// 모달 요소
 const txModal = document.getElementById("txModal");
 const modalDateTitle = document.getElementById("modalDateTitle");
 const modalTxList = document.getElementById("modalTxList");
 const closeBtn = document.querySelector(".close-btn");
 
+// 폼 요소
 const txTypeInput = document.getElementById("txType");
 const txCategoryInput = document.getElementById("txCategory");
 const txAmountInput = document.getElementById("txAmount");
@@ -19,7 +20,7 @@ const btnAddTx = document.getElementById("btnAddTx");
 const calendarState = {
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
-    selectedDate: null // 현재 모달이 열린 날짜 (YYYY-MM-DD)
+    selectedDate: null 
 };
 
 function formatCurrency(amount) {
@@ -27,7 +28,7 @@ function formatCurrency(amount) {
 }
 
 /**
- * 모달 내부 리스트만 다시 그리기
+ * 모달 리스트 새로고침
  */
 function refreshModalList() {
     modalTxList.innerHTML = "";
@@ -42,93 +43,76 @@ function refreshModalList() {
     dayTxs.forEach(tx => {
         const li = document.createElement("li");
         li.className = "detail-item";
-        
         const isInc = tx.type === "income";
-        const typeLabel = isInc ? "+" : "-";
-
         li.innerHTML = `
             <div class="detail-info">
                 <span class="detail-category">${tx.category}</span>
                 <span class="detail-name">${isInc ? '수입' : '지출'}</span>
             </div>
             <div class="detail-right">
-                <div class="detail-amount ${tx.type}">
-                    ${typeLabel}${formatCurrency(tx.amount)}
-                </div>
+                <div class="detail-amount ${tx.type}">${isInc ? '+' : '-'}${formatCurrency(tx.amount)}</div>
                 <span class="btn-delete" data-id="${tx.id}">&times;</span>
             </div>
         `;
-
-        // 삭제 버튼 이벤트 연결
         li.querySelector(".btn-delete").onclick = (e) => {
             const id = e.target.getAttribute("data-id");
-            if (confirm("이 내역을 삭제하시겠습니까?")) {
+            if (confirm("삭제하시겠습니까?")) {
                 window.TransactionStorage.remove(id);
-                renderCalendar();    // 달력 업데이트
-                refreshModalList();  // 모달 리스트 업데이트
+                renderCalendar();
+                refreshModalList();
             }
         };
-
         modalTxList.appendChild(li);
     });
 }
 
-/**
- * 상세 관리 모달 열기
- */
 function openModal(dateStr) {
     calendarState.selectedDate = dateStr;
     modalDateTitle.textContent = dateStr;
-    
-    // 입력 필드 초기화
     txCategoryInput.value = "";
     txAmountInput.value = "";
-    
     refreshModalList();
     txModal.style.display = "block";
 }
 
-/**
- * 내역 추가 핸들러
- */
 btnAddTx.onclick = () => {
     const category = txCategoryInput.value.trim();
     const amount = parseInt(txAmountInput.value);
     const type = txTypeInput.value;
-
     if (!category || isNaN(amount) || amount <= 0) {
-        alert("카테고리와 올바른 금액을 입력해주세요.");
+        alert("내용과 금액을 확인해주세요.");
         return;
     }
-
     window.TransactionStorage.add({
         date: calendarState.selectedDate,
         type: type,
         amount: amount,
         category: category
     });
-
-    txCategoryInput.value = "";
-    txAmountInput.value = "";
-    
-    renderCalendar();    // 달력 다시 그리기
-    refreshModalList();  // 모달 목록 다시 그리기
+    renderCalendar();
+    refreshModalList();
 };
 
+/**
+ * 달력 렌더링
+ */
 function renderCalendar(){
     const firstDay = new Date(calendarState.year, calendarState.month, 1).getDay();
     const lastDate = new Date(calendarState.year, calendarState.month + 1, 0).getDate();
     const toDay = new Date();
-
     const transactions = window.TransactionStorage ? window.TransactionStorage.getAll() : [];
 
     miniDays.innerHTML="";
     fullDays.innerHTML="";
 
-    const yearDisplays = document.querySelectorAll(".calendar-Title-Year");
-    yearDisplays.forEach(display => {
-        display.textContent = `${calendarState.year}년 ${calendarState.month + 1}월`;
+    document.querySelectorAll(".calendar-Title-Year").forEach(el => {
+        el.textContent = `${calendarState.year}년 ${calendarState.month + 1}월`;
     });
+
+    // --- 주차(Rows) 동적 계산 ---
+    const totalCells = firstDay + lastDate;
+    const rows = Math.ceil(totalCells / 7);
+    fullDays.style.gridTemplateRows = `repeat(${rows}, 1fr)`; 
 
     for (let x = 0; x < firstDay; x++) {
         miniDays.appendChild(document.createElement('div'));
@@ -136,49 +120,47 @@ function renderCalendar(){
     }
 
     for (let i = 1; i <= lastDate; i++) {
-        const miniEl = document.createElement('div');
-        const fullEl = document.createElement('div');
         const dateStr = `${calendarState.year}-${String(calendarState.month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
         
+        const miniEl = document.createElement('div');
         miniEl.textContent = i;
+        
+        const fullEl = document.createElement('div');
         const dateNum = document.createElement('span');
         dateNum.textContent = i;
         fullEl.appendChild(dateNum);
-
         fullEl.onclick = () => openModal(dateStr);
 
+        // 요일 클래스
         const dayIdx = (firstDay + i - 1) % 7;
-        if(dayIdx === 0) { 
-            miniEl.classList.add("is-sun");
-            fullEl.classList.add("is-sun");
-        } else if(dayIdx === 6) { 
-            miniEl.classList.add("is-sat");
-            fullEl.classList.add("is-sat");
-        }
+        if(dayIdx === 0) { miniEl.classList.add("is-sun"); fullEl.classList.add("is-sun"); }
+        else if(dayIdx === 6) { miniEl.classList.add("is-sat"); fullEl.classList.add("is-sat"); }
 
+        // 오늘 날짜
         if(toDay.getFullYear() === calendarState.year && toDay.getMonth() === calendarState.month && toDay.getDate() === i){
-            miniEl.classList.add("is-today");
+            miniEl.classList.add("is-today"); 
             fullEl.classList.add("is-today");
         }
 
+        // 요약 내역 표시
         const dayTxs = transactions.filter(tx => tx.date === dateStr);
         if (dayTxs.length > 0) {
             const txContainer = document.createElement('div');
             txContainer.className = 'tx-container';
-            const incomeTotal = dayTxs.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-            const expenseTotal = dayTxs.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const inc = dayTxs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+            const exp = dayTxs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
 
-            if (incomeTotal > 0) {
-                const incLabel = document.createElement('div');
-                incLabel.className = 'tx-label tx-income-label';
-                incLabel.textContent = `+${formatCurrency(incomeTotal)}`;
-                txContainer.appendChild(incLabel);
+            if (inc > 0) {
+                const label = document.createElement('div');
+                label.className = 'tx-label tx-income-label';
+                label.textContent = `+${formatCurrency(inc)}`;
+                txContainer.appendChild(label);
             }
-            if (expenseTotal > 0) {
-                const expLabel = document.createElement('div');
-                expLabel.className = 'tx-label tx-expense-label';
-                expLabel.textContent = `-${formatCurrency(expenseTotal)}`;
-                txContainer.appendChild(expLabel);
+            if (exp > 0) {
+                const label = document.createElement('div');
+                label.className = 'tx-label tx-expense-label';
+                label.textContent = `-${formatCurrency(exp)}`;
+                txContainer.appendChild(label);
             }
             fullEl.appendChild(txContainer);
         }
@@ -189,24 +171,27 @@ function renderCalendar(){
 }
 
 function moveMonth(){
-    prevButtons.forEach(btn => {
-        btn.onclick = () => {
-            calendarState.month--;
-            if (calendarState.month < 0) { calendarState.month = 11; calendarState.year--; }
-            renderCalendar();
-        };
+    prevButtons.forEach(btn => btn.onclick = () => {
+        calendarState.month--;
+        if (calendarState.month < 0) { calendarState.month = 11; calendarState.year--; }
+        renderCalendar();
     });
-    nextButtons.forEach(btn => {
-        btn.onclick = () => {
-            calendarState.month++;
-            if (calendarState.month > 11) { calendarState.month = 0; calendarState.year++; }
-            renderCalendar();
-        };
+    nextButtons.forEach(btn => btn.onclick = () => {
+        calendarState.month++;
+        if (calendarState.month > 11) { calendarState.month = 0; calendarState.year++; }
+        renderCalendar();
     });
 }
 
 closeBtn.onclick = () => txModal.style.display = "none";
-window.onclick = (event) => { if (event.target == txModal) txModal.style.display = "none"; };
+window.onclick = (e) => { if (e.target == txModal) txModal.style.display = "none"; };
+
+// 화면 크기 변경 시 달력 동기화
+window.addEventListener('resize', renderCalendar);
+
+// 초기화
+renderCalendar();
+moveMonth();
 
 function updateClock() {
     const clockElement = document.getElementById("liveClock");
@@ -214,17 +199,13 @@ function updateClock() {
     const now = new Date();
     const month = now.getMonth() + 1;
     const date = now.getDate();
-    const dayList = ["일", "월", "화", "수", "목", "금", "토"];
-    const day = dayList[now.getDay()];
-    let hours = now.getHours();
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-    const ampm = hours >= 12 ? "오후" : "오전";
-    hours = hours % 12 || 12;
-    clockElement.textContent = `${month}월 ${date}일(${day}) ${ampm} ${hours}:${minutes}:${seconds}`;
+    const day = ["일", "월", "화", "수", "목", "금", "토"][now.getDay()];
+    let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2, "0");
+    const s = String(now.getSeconds()).padStart(2, "0");
+    const ampm = h >= 12 ? "오후" : "오전";
+    h = h % 12 || 12;
+    clockElement.textContent = `${month}월 ${date}일(${day}) ${ampm} ${h}:${m}:${s}`;
 }
-
 setInterval(updateClock, 1000);
 updateClock();
-renderCalendar();
-moveMonth();

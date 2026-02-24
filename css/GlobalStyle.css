@@ -41,32 +41,39 @@
 /* --- 미디어 쿼리: 태블릿 및 작은 화면 (1024px 이하) --- */
 @media (max-width: 1024px) {
   :root {
-    --sidebar-width: 240px; /* 사이드바 폭 축소 */
+    --sidebar-width: 240px; 
   }
 }
 
 /* --- 미디어 쿼리: 모바일 환경 (768px 이하) --- */
 @media (max-width: 768px) {
   :root {
-    --sidebar-width: 100%; /* 사이드바를 전체 폭으로 변경 */
+    --sidebar-width: 100%; 
     --header-height: 50px;
   }
 
-  /* 모바일에서는 사이드바와 메인이 세로로 배치되도록 컨테이너 수정 */
+  /* 모바일 스크롤 및 잘림 방지 설정 */
   .calender-container {
-    flex-direction: column; 
-    overflow-y: auto;
-    height: auto;
+    flex-direction: column !important; 
+    height: auto !important; /* 고정 높이 해제 */
+    min-height: 100vh;
+    overflow-y: visible !important; /* 스크롤 허용 */
+    display: block !important; 
   }
 
   .calendar-left {
-    height: auto;
-    border-right: none;
+    width: 100% !important;
+    height: auto !important;
+    border-right: none !important;
     border-bottom: 1px solid var(--border-light);
+    padding: 20px !important;
   }
 
   .calendar-right {
-    padding: 15px;
+    width: 100% !important;
+    padding: 15px !important;
+    height: auto !important;
+    min-height: 600px; /* 큰 달력 최소 높이 확보 */
   }
 }
 
