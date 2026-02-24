@@ -1,25 +1,7 @@
-(() => {
-  /*
-    TransactionStorage (공용 모듈)
-    - 전역 객체: window.TransactionStorage
-    - 저장 키: householder.transactions.v1
-    - 주요 메서드: getAll(), add(tx), remove(id), clear()
-
-    빠른 사용 예시:
-      const list = window.TransactionStorage.getAll();
-      window.TransactionStorage.add({
-        date: "2026-02-24",
-        type: "expense", // 또는 "income"
-        amount: 12000,
-        category: "food"
-      });
-
-    협업 규칙:
-    - 거래 저장/조회는 이 모듈을 단일 진실 원천으로 사용합니다.
-    - 스키마 변경 시 STORAGE_KEY 버전을 올리고 마이그레이션을 검토합니다.
-    - 상세 문서: docs/TRANSACTION_STORAGE.md
-  */
-  const STORAGE_KEY = "householder.transactions.v1";
+﻿(() => {
+  const NS = "householder";
+  const STORAGE_VERSION = "v2";
+  const LEGACY_STORAGE_KEY = `${NS}.transactions.v1`;
   const memoryStore = {};
 
   function canUseLocalStorage() {
@@ -35,31 +17,77 @@
 
   const storageEnabled = canUseLocalStorage();
 
-  function readRaw() {
-    if (storageEnabled) {
-      return window.localStorage.getItem(STORAGE_KEY);
+  function sanitizeUserId(value) {
+    if (window.AuthSession && typeof window.AuthSession.sanitizeUserId === "function") {
+      return window.AuthSession.sanitizeUserId(value);
     }
-    return memoryStore[STORAGE_KEY] || "[]";
+
+    const text = String(value || "").trim().toLowerCase();
+    if (!text) return "demo";
+    return (
+      text
+        .replace(/[^a-z0-9_-]+/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "") || "demo"
+    );
   }
 
-  function writeRaw(jsonText) {
+  function getSessionUserId() {
+    if (window.AuthSession && typeof window.AuthSession.getCurrentUserId === "function") {
+      return sanitizeUserId(window.AuthSession.getCurrentUserId());
+    }
+    return "demo";
+  }
+
+  function getStorageKey(userId = getSessionUserId()) {
+    return `${NS}.${sanitizeUserId(userId)}.transactions.${STORAGE_VERSION}`;
+  }
+
+  function readRaw(key) {
     if (storageEnabled) {
-      window.localStorage.setItem(STORAGE_KEY, jsonText);
+      return window.localStorage.getItem(key);
+    }
+    return Object.prototype.hasOwnProperty.call(memoryStore, key) ? memoryStore[key] : null;
+  }
+
+  function writeRaw(key, jsonText) {
+    if (storageEnabled) {
+      window.localStorage.setItem(key, jsonText);
       return;
     }
-    memoryStore[STORAGE_KEY] = jsonText;
+    memoryStore[key] = jsonText;
+  }
+
+  function removeRaw(key) {
+    if (storageEnabled) {
+      window.localStorage.removeItem(key);
+      return;
+    }
+    delete memoryStore[key];
+  }
+
+  function migrateLegacyDataIfNeeded(userId) {
+    const targetKey = getStorageKey(userId);
+    const currentRaw = readRaw(targetKey);
+    if (currentRaw && currentRaw !== "[]") return;
+
+    const legacyRaw = readRaw(LEGACY_STORAGE_KEY);
+    if (!legacyRaw || legacyRaw === "[]") return;
+
+    writeRaw(targetKey, legacyRaw);
+    removeRaw(LEGACY_STORAGE_KEY);
   }
 
   function parseDate(value) {
     if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-      throw new Error("date는 YYYY-MM-DD 형식이어야 합니다.");
+      throw new Error("date must be YYYY-MM-DD.");
     }
     return value;
   }
 
   function parseType(value) {
     if (value !== "income" && value !== "expense") {
-      throw new Error("type은 income 또는 expense여야 합니다.");
+      throw new Error("type must be income or expense.");
     }
     return value;
   }
@@ -67,7 +95,7 @@
   function parseAmount(value) {
     const num = Number(value);
     if (!Number.isFinite(num) || num <= 0) {
-      throw new Error("amount는 0보다 커야 합니다.");
+      throw new Error("amount must be greater than 0.");
     }
     return Math.round(num);
   }
@@ -77,7 +105,7 @@
     if (text.length === 0) {
       return "etc";
     }
-    return text;
+    return text.slice(0, 30);
   }
 
   function normalizeTransaction(input) {
@@ -102,9 +130,12 @@
     return list;
   }
 
-  function readAll() {
+  function readAll(userId = getSessionUserId()) {
+    const safeUserId = sanitizeUserId(userId);
+    migrateLegacyDataIfNeeded(safeUserId);
+
     try {
-      const raw = readRaw();
+      const raw = readRaw(getStorageKey(safeUserId));
       const parsed = JSON.parse(raw || "[]");
       if (!Array.isArray(parsed)) return [];
       const normalized = [];
@@ -112,7 +143,7 @@
         try {
           normalized.push(normalizeTransaction(parsed[i]));
         } catch (error) {
-          // 저장소의 유효하지 않은 항목은 건너뜁니다.
+          // Skip invalid rows.
         }
       }
       return sortTransactions(normalized);
@@ -121,35 +152,39 @@
     }
   }
 
-  function writeAll(list) {
-    writeRaw(JSON.stringify(sortTransactions(list.slice())));
+  function writeAll(list, userId = getSessionUserId()) {
+    const safeUserId = sanitizeUserId(userId);
+    writeRaw(getStorageKey(safeUserId), JSON.stringify(sortTransactions(list.slice())));
   }
 
   const TransactionStorage = {
-    key: STORAGE_KEY,
+    key: getStorageKey(),
     isPersistent: storageEnabled,
-    getAll() {
-      return readAll();
+    getKey(userId) {
+      return getStorageKey(typeof userId === "undefined" ? getSessionUserId() : userId);
     },
-    add(input) {
+    getAll(userId) {
+      const targetUserId = typeof userId === "undefined" ? getSessionUserId() : userId;
+      return readAll(targetUserId);
+    },
+    add(input, userId) {
       const tx = normalizeTransaction(input);
-      const list = readAll();
+      const targetUserId = typeof userId === "undefined" ? getSessionUserId() : userId;
+      const list = readAll(targetUserId);
       list.push(tx);
-      writeAll(list);
+      writeAll(list, targetUserId);
       return tx;
     },
-    remove(id) {
-      const list = readAll();
+    remove(id, userId) {
+      const targetUserId = typeof userId === "undefined" ? getSessionUserId() : userId;
+      const list = readAll(targetUserId);
       const next = list.filter((item) => item.id !== id);
-      writeAll(next);
+      writeAll(next, targetUserId);
       return next.length !== list.length;
     },
-    clear() {
-      if (storageEnabled) {
-        window.localStorage.removeItem(STORAGE_KEY);
-      } else {
-        delete memoryStore[STORAGE_KEY];
-      }
+    clear(userId) {
+      const targetUserId = typeof userId === "undefined" ? getSessionUserId() : userId;
+      removeRaw(getStorageKey(targetUserId));
     },
   };
 

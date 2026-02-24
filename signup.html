@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>회원가입 - Toss</title>
+  <title>회원가입 - Moment</title>
   <link rel="stylesheet" href="css/GlobalStyle.css">
   <link rel="stylesheet" href="css/login.css">
   <link rel="stylesheet" href="css/main.css">
@@ -20,6 +20,7 @@
           <li><a href="calender.html">캘린더</a></li>
           <li><a href="household.html">가계부</a></li>
           <li><a href="accounts.html">계좌</a></li>
+          <li><a href="admin.html">Admin</a></li>
         </div>
         <div class="login-out">
           <li><a href="login.html">로그인</a></li>
@@ -35,7 +36,7 @@
   <div class="container">
     <div class="title-group">
       <h2 class="title-group__main">회원가입</h2>
-      <p class="title-group__sub">간편하게 가입하고 서비스를 이용하세요</p>
+      <p class="title-group__sub">간편하게 가입하고 서비스를 이용하세요.</p>
     </div>
 
     <form id="signup-form" class="form-group">
@@ -47,7 +48,7 @@
       <div class="form-options">
         <label class="checkbox-label">
           <input type="checkbox" id="agree-all" class="checkbox-input" required>
-          <span style="font-size: 13px;">[필수] 서비스 이용약관 및 개인정보 처리방침에 동의합니다</span>
+          <span style="font-size: 13px;">[필수] 서비스 이용약관 및 개인정보 처리방침에 동의합니다.</span>
         </label>
       </div>
 
@@ -63,6 +64,7 @@
 </main>
 
 <script src="js/authSession.js"></script>
+<script src="js/userStorage.js"></script>
 <script src="js/signup.js"></script>
 </body>
 </html>

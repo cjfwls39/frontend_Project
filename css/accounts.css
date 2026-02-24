@@ -93,6 +93,12 @@ body {
   margin-bottom: 10px;
 }
 
+.account-count-text {
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 .accounts-panel {
   grid-column: span 4;
 }
@@ -110,6 +116,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 10px;
 }
 
 .account-card {
@@ -135,6 +142,12 @@ body {
   margin-top: 2px;
   font-size: 11px;
   color: var(--text-muted);
+}
+
+.add-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
 }
 
 .transfer-form {
@@ -190,6 +203,14 @@ body {
 .transfer-submit-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.transfer-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-sub);
 }
 
 .transfer-disabled-hint {
@@ -253,6 +274,14 @@ body {
   margin-top: 4px;
   font-size: 12px;
   color: var(--text-sub);
+}
+
+.transfer-memo.is-expense-ok {
+  color: var(--color-success);
+}
+
+.transfer-memo.is-expense-fail {
+  color: var(--color-danger);
 }
 
 .transfer-empty {
