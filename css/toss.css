@@ -1,293 +1,138 @@
-*{
-    margin: 0;
-    padding: 0;
+/* --- toss.css (Global Variable Focus) --- */
+
+/* 1. Navigation */
+nav {
+    background-color: var(--bg-sub);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-/* 1. header */
-/* 1-1. header - bar */
-nav{
-    background-color: white;
-}
-ul{
+ul {
     list-style: none;
     display: flex;
     justify-content: space-around;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: var(--header-height);
+    padding: 0 20px;
 }
-.navbar, .login-out, .download{
+
+.navbar, .login-out {
     display: flex;
     align-items: center;
-}
-li{
-    margin: 10px;
-    font-size: 13px;
-    margin:  8px 10px;
-}
-a{
-    text-decoration: none;
-    color: gray;
-}
-.logo img{
-    width: 80px;
+    gap: 20px;
 }
 
-/* 1-2  header - thumbnail */
-.head-section2{
-    background: url(../img/tossmain.png) center top;
-    background-size: cover;
-    width: 100%;
-    height: 800px;
-    margin: 0;
-    display: block;
-    text-align: center;
-    position: relative;
-    
-}
-.gradi-box{
-    background: linear-gradient(to top, transparent, white);
-    position: absolute;
-    height: 300px;
-    width: 100%;
-    top: 0;
-    z-index: 0;
-}
-.head-section2 h1{
-    padding: 120px 0px;
-    font-size: 60px;
-    line-height: 1.4;
-    position: relative;
-    z-index: 2;
-}
-.head-section2 a{
-    background-color: rgba(0,0,0,0.8);
-    color: white;
-    padding: 13px;
-    border-radius: 15px;
-    font-size: 17px;
-    font-weight: bold;
-}
-
-.head-section2 h1, .head-section2 a {
-    animation: thumbnails 3s;
-}
-.download-btn{
-    height: 30px ;
-    position: relative;
-    top: 7px;
-    padding-right: 2px;
-}
-
-@keyframes thumbnails {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* main - section 1 */
-.main-section1 {
-    height: 480px;
-    text-align: center;
-    background-color: aliceblue;
-}
-.main-section1 p{
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 1.6;
-    padding: 190px 0;
-}
-
-/* main - section 2 */
-
-.main-section2{
-    padding: 50px;
-    width: 70%;
-    padding-left: 10%;
-    margin: 0 auto;
-}
-.title p{
-    font-size: 20px;
-    padding-bottom: 10px;
-    color: #3182f6;
-    opacity: 0;                     /* 숨김 */
-    transform: translateX(-30px);   /* 왼쪽에서 시작 */
-}
-
-.text p{
-    font-size: 50px;
-    font-weight: 500;
-    line-height: 1.3;
-    opacity: 0;                     /* 숨김 */
-    transform: translateX(-30px);   /* 왼쪽에서 시작 */
-}
-
-@keyframes moveInLeft {
-    from{
-        transform: translateX(-30px);
-        opacity: 0;
-    }
-    to{
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-/* main - phone 1 */
-
-.phone-mock{
-    position: relative;
-    width: min(420px, 90vw);
-    aspect-ratio: 3 / 6;
-    margin-left: auto;
-    opacity: 0;
-}
-.phone-mock .frame{
-    position: absolute;
-    inset: 0;
-    width: 500px;
-    top: -20%;
-    object-fit: contain;
-    z-index: 2;
-}
-.phone-mock .screen{
-    position: absolute;
-    width: 279px;
-    top: -10%;
-    left: 26%;
-    object-fit: cover;
-    border-radius: 28px;
-    z-index: 1;
-}
-
-/* main - phone 2 */
-
-.phone-mock2{
-    position: relative;
-    width: min(420px, 90vw);
-    /* aspect-ratio: 3 / 6; */
-    /* margin-left: auto; */
-    opacity: 0;
-}
-.phone-mock2 .frame2{
-    position: absolute;
-    inset: 0;
-    width: 500px;
-    /* top: -100%; */
-    transform: translateY(-100%);
-    left: -26%;
-    object-fit: contain;
-    z-index: 2;
-}
-.phone-mock2 .screen2{
-    position: absolute;
-    width: 279px;
-    /* top: -90%; */
-    transform: translateY(-115%);
-    /* left: 26.7%; */
-    object-fit: cover;
-    border-radius: 28px;
-    z-index: 1;
-}
-
-.main-section2.is-visible p{
-    animation: moveInLeft 3s ease-out forwards;
-}
-
-.main-section2.is-visible .phone-mock,
-.main-section2.is-visible .phone-mock2{
-    animation: moveInBottom 3s ease-out forwards;
-}
-
-.main-section3{
-    background: url(../img/mainbg.png);
-    width: 100%;
-    height: 800px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-.sec-text{
-    font-size: 70px;
-    font-weight: bold;
-    color: white;
-    position: relative;
-    top: 340px;
-    text-align: center;
-}
-
-.left-box{
-    background-color: white;
-    position: absolute;
-    width: 400px;
-    height: 800px;
-    top: 0;
-}
-.right-box{
-    background-color: white;
-    position: absolute;
-    width: 400px;
-    height: 800px;
-    top: 0;
-    right: 0;
-}
-
-.left-box, .right-box {
-    will-change: transform;
-    transform: translateX(0);
-}
-
-@keyframes moveInBottom{
-    from{
-        transform: translateY(0);
-        opacity: 0;
-    }
-    to{
-        transform: translateY(-30px);
-        opacity: 1;
-    }
-}
-
-@media screen and (max-width:800px) {
-    .head-section2 h1{
-        font-size: 40px;
-    }
-    ul{
-        display: flex;
-        justify-content: space-between;
-        margin: auto 20px;
-    }
-    .download{
-        display: flex;
-    }
-    .phone-mock{
-        top: 150px;
-        right: 100px;
-    }
-    .phone-mock2{
-        display: none;
-    }
-}
-
-/* footer */
-
-.footer{
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(5, 20%);
-    font-family: inherit;
+li {
     font-size: 14px;
-    color: gray;
-    text-align: center;
-    margin: 80px;
-}
-.footerbtn{
-    line-height: 2;
-}
-.box2{
-    font-size: 16px;
-    color: black;
-    font-weight: 400;
-    margin: 10px;
+    font-weight: 600;
 }
 
+li a {
+    text-decoration: none;
+    color: var(--text-sub);
+    transition: 0.3s;
+}
+
+li a:hover {
+    color: var(--color-primary);
+}
+
+.logo img {
+    width: 80px;
+    filter: brightness(0.2); /* 차콜 테마에 맞춰 로고 톤 다운 */
+}
+
+/* 2. Main Content Layout (가운데 틀) */
+.content-wrapper {
+    min-height: calc(100vh - var(--header-height) - 400px); /* 푸터 높이 고려 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    background-color: var(--bg-main);
+}
+
+.dynamic-content-area {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.content-card {
+    background-color: var(--bg-sub);
+    border-radius: var(--radius-main);
+    padding: 50px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+    text-align: center;
+}
+
+.content-title {
+    font-size: clamp(24px, 4vw, 36px);
+    color: var(--text-main);
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+.content-desc {
+    color: var(--text-sub);
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.placeholder-box {
+    width: 100%;
+    height: 200px;
+    background-color: var(--bg-main);
+    border: 2px dashed var(--border-main);
+    border-radius: var(--radius-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* 3. Footer (기존 구조 유지 + 변수 적용) */
+.footer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 40px;
+    padding: 80px 10%;
+    background-color: var(--bg-sub);
+    border-top: 1px solid var(--border-light);
+}
+
+.box2 {
+    font-size: 16px;
+    color: var(--text-main);
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.box {
+    margin-bottom: 10px;
+}
+
+.footerbtn {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footerbtn:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    ul { flex-direction: column; height: auto; padding: 20px; }
+    .content-card { padding: 30px; }
+    .footer { padding: 50px 20px; }
+}

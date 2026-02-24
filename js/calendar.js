@@ -1,7 +1,7 @@
-// 같은 기능을 가진 버튼이 같은 클래스 이름으로 두개 이상이라 all로 가져오기
+/* --- calendar.js (100% Variable & Class Based) --- */
+
 const prevButtons = document.querySelectorAll(".btn-prev");
 const nextButtons = document.querySelectorAll(".btn-next");
-
 const miniDays = document.querySelector("#miniDays");
 const fullDays = document.querySelector("#fullDays");
 
@@ -11,89 +11,79 @@ const calendarState = {
 };
 
 function renderCalendar(){
-    let firstDay = new Date(calendarState.year, calendarState.month, 1).getDay();
-    let lastDate = new Date(calendarState.year, calendarState.month + 1, 0).getDate();
-    let toDay = new Date();
+    const firstDay = new Date(calendarState.year, calendarState.month, 1).getDay();
+    const lastDate = new Date(calendarState.year, calendarState.month + 1, 0).getDate();
+    const toDay = new Date();
 
-    // 초기화
     miniDays.innerHTML="";
     fullDays.innerHTML="";
 
+    // 년월 표시 업데이트
     const yearDisplays = document.querySelectorAll(".calendar-Title-Year");
     yearDisplays.forEach(display => {
         display.textContent = `${calendarState.year}년 ${calendarState.month + 1}월`;
     });
 
-    // 시작 요일까지 빈칸 채우기
+    // 시작 요일 빈칸 채우기
     for (let x = 0; x < firstDay; x++) {
         miniDays.appendChild(document.createElement('div'));
         fullDays.appendChild(document.createElement('div'));
     }
 
-    // 날짜 숫자 채워 넣기
+    // 날짜 생성 로직
     for (let i = 1; i <= lastDate; i++) {
-        const miniDaysElement = document.createElement('div');
-        const fullDaysElement = document.createElement('div');
-        miniDaysElement.textContent = i;
-        fullDaysElement.textContent = i;
+        const miniEl = document.createElement('div');
+        const fullEl = document.createElement('div');
+        
+        miniEl.textContent = i;
+        fullEl.textContent = i;
 
         const dayIdx = (firstDay + i - 1) % 7;
-        
-        // 요일별 글자색 설정 (CSS 변수 활용)
-        if(dayIdx === 0) { // 일요일
-            miniDaysElement.style.color = "var(--color-danger)";
-            fullDaysElement.style.color = "var(--color-danger)";
-        } else if(dayIdx === 6) { // 토요일
-            miniDaysElement.style.color = "var(--color-primary)";
-            fullDaysElement.style.color = "var(--color-primary)";
-        } else { // 평일
-            miniDaysElement.style.color = "var(--text-main)";
-            fullDaysElement.style.color = "var(--text-main)";
+
+        // 1. 요일별 클래스 부여 (CSS 변수 활용)
+        if(dayIdx === 0) { 
+            miniEl.classList.add("is-sun");
+            fullEl.classList.add("is-sun");
+        } else if(dayIdx === 6) { 
+            miniEl.classList.add("is-sat");
+            fullEl.classList.add("is-sat");
         }
 
-        // 오늘 날짜 스타일 적용 (인디고 테마)
+        // 2. 오늘 날짜 판단 및 클래스 부여
         if(toDay.getFullYear() === calendarState.year && 
            toDay.getMonth() === calendarState.month && 
            toDay.getDate() === i){
             
-            const todayStyle = { 
-                backgroundColor: "var(--color-primary-soft)", // 연한 인디고 배경
-                color: "var(--color-primary)",                // 인디고 포인트 컬러
-                fontWeight: "800", 
-                borderRadius: "8px",
-                border: "1px solid var(--color-primary)"      // 테두리 추가로 강조
-            };
-
-            Object.assign(miniDaysElement.style, todayStyle);
-            Object.assign(fullDaysElement.style, todayStyle);
+            miniEl.classList.add("is-today");
+            fullEl.classList.add("is-today");
         }
 
-        miniDays.appendChild(miniDaysElement);
-        fullDays.appendChild(fullDaysElement);
+        miniDays.appendChild(miniEl);
+        fullDays.appendChild(fullEl);
     }
 }
 
 function moveMonth(){
     prevButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
+        btn.onclick = () => {
             calendarState.month--;
             if (calendarState.month < 0) {
                 calendarState.month = 11;
                 calendarState.year--;
             }
             renderCalendar();
-        });
+        };
     });
 
     nextButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
+        btn.onclick = () => {
             calendarState.month++;
             if (calendarState.month > 11) {
                 calendarState.month = 0;
                 calendarState.year++;
             }
             renderCalendar();
-        });
+        };
     });
 }
 
@@ -112,13 +102,12 @@ function updateClock() {
     const seconds = String(now.getSeconds()).padStart(2, "0");
     const ampm = hours >= 12 ? "오후" : "오전";
     
-    hours = hours % 12;
-    hours = hours ? hours : 12;
+    hours = hours % 12 || 12;
 
-    const timeString = `${month}월 ${date}일(${day}) ${ampm} ${hours}:${minutes}:${seconds}`;
-    clockElement.textContent = timeString;
+    clockElement.textContent = `${month}월 ${date}일(${day}) ${ampm} ${hours}:${minutes}:${seconds}`;
 }
 
+// 초기화 실행
 setInterval(updateClock, 1000);
 updateClock();
 renderCalendar();
