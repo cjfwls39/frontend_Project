@@ -1,414 +1,266 @@
-// -----------------------------
-// 1) 기본 날짜 / 화면 상태
-// -----------------------------
-const today = new Date();
-let viewYear = today.getFullYear();
-let viewMonth = today.getMonth(); // 0~11
-let selectedDay = null;
+const now = new Date();
+let year = now.getFullYear();
+let month = now.getMonth(); // 0~11
 
-// -----------------------------
-// 2) 더미 거래 데이터
-// -----------------------------
-const currentYear = today.getFullYear();
-const currentMonth = today.getMonth() + 1;
+const y = now.getFullYear();
+const m = now.getMonth() + 1;
+const prev = new Date(y, now.getMonth() - 1, 1);
+const py = prev.getFullYear();
+const pm = prev.getMonth() + 1;
 
-const prevDate = new Date(currentYear, today.getMonth() - 1, 1);
-const prevYear = prevDate.getFullYear();
-const prevMonth = prevDate.getMonth() + 1;
-
-const transactions = [
-  { id: 1, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-01`, type: "expense", amount: 369800, category: "생활" },
-  { id: 2, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-03`, type: "expense", amount: 66900, category: "식비" },
-  { id: 3, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-04`, type: "expense", amount: 24490, category: "교통" },
-  { id: 4, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-05`, type: "expense", amount: 25260, category: "생활" },
-  { id: 5, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-07`, type: "income", amount: 1456000, category: "급여" },
-  { id: 6, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-08`, type: "income", amount: 100000, category: "용돈" },
-  { id: 7, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-08`, type: "expense", amount: 16200, category: "카페" },
-  { id: 8, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-09`, type: "income", amount: 4500, category: "기타수입" },
-  { id: 9, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-10`, type: "expense", amount: 990000, category: "의료/건강" },
-  { id: 10, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-12`, type: "expense", amount: 44600, category: "생활" },
-  { id: 11, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-13`, type: "expense", amount: 151400, category: "의료/건강" },
-  { id: 12, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-14`, type: "income", amount: 85800, category: "환급" },
-  { id: 13, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-16`, type: "expense", amount: 65000, category: "쇼핑" },
-  { id: 14, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-19`, type: "expense", amount: 88000, category: "식비" },
-  { id: 15, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-23`, type: "income", amount: 250000, category: "부수입" },
-  { id: 16, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-27`, type: "expense", amount: 132000, category: "교통" },
-  { id: 17, date: `${currentYear}-${String(currentMonth).padStart(2, "0")}-30`, type: "expense", amount: 72000, category: "생활" },
-
-  { id: 18, date: `${prevYear}-${String(prevMonth).padStart(2, "0")}-02`, type: "expense", amount: 1900000, category: "의료/건강" },
-  { id: 19, date: `${prevYear}-${String(prevMonth).padStart(2, "0")}-11`, type: "income", amount: 1350000, category: "급여" },
-  { id: 20, date: `${prevYear}-${String(prevMonth).padStart(2, "0")}-14`, type: "expense", amount: 420000, category: "생활" },
-  { id: 21, date: `${prevYear}-${String(prevMonth).padStart(2, "0")}-21`, type: "expense", amount: 1550000, category: "여가" },
+const data = [
+  { date: `${y}-${String(m).padStart(2, "0")}-01`, type: "expense", amount: 369800, category: "생활" },
+  { date: `${y}-${String(m).padStart(2, "0")}-03`, type: "expense", amount: 66900, category: "식비" },
+  { date: `${y}-${String(m).padStart(2, "0")}-07`, type: "income", amount: 1456000, category: "급여" },
+  { date: `${y}-${String(m).padStart(2, "0")}-08`, type: "income", amount: 100000, category: "용돈" },
+  { date: `${y}-${String(m).padStart(2, "0")}-08`, type: "expense", amount: 16200, category: "카페" },
+  { date: `${y}-${String(m).padStart(2, "0")}-10`, type: "expense", amount: 990000, category: "의료/건강" },
+  { date: `${y}-${String(m).padStart(2, "0")}-14`, type: "income", amount: 85800, category: "환급" },
+  { date: `${y}-${String(m).padStart(2, "0")}-16`, type: "expense", amount: 65000, category: "쇼핑" },
+  { date: `${y}-${String(m).padStart(2, "0")}-19`, type: "expense", amount: 88000, category: "식비" },
+  { date: `${y}-${String(m).padStart(2, "0")}-23`, type: "income", amount: 250000, category: "부수입" },
+  { date: `${py}-${String(pm).padStart(2, "0")}-02`, type: "expense", amount: 1900000, category: "의료/건강" },
+  { date: `${py}-${String(pm).padStart(2, "0")}-11`, type: "income", amount: 1350000, category: "급여" },
 ];
 
-// -----------------------------
-// 3) 자주 쓰는 DOM
-// -----------------------------
-const monthLabelEl = document.getElementById("monthLabel");
-const calendarTitleEl = document.getElementById("calendarTitle");
-const expenseTotalLabelEl = document.getElementById("expenseTotalLabel");
-const incomeTotalLabelEl = document.getElementById("incomeTotalLabel");
-const monthDeltaLabelEl = document.getElementById("monthDeltaLabel");
-const topCategoryLabelEl = document.getElementById("topCategoryLabel");
-const calendarDaysEl = document.getElementById("calendarDays");
-const prevMonthBtn = document.getElementById("prevMonthBtn");
-const nextMonthBtn = document.getElementById("nextMonthBtn");
+const monthLabel = document.getElementById("monthLabel");
+const calendarTitle = document.getElementById("calendarTitle");
+const expenseLabel = document.getElementById("expenseTotalLabel");
+const incomeLabel = document.getElementById("incomeTotalLabel");
+const deltaLabel = document.getElementById("monthDeltaLabel");
+const topCategoryLabel = document.getElementById("topCategoryLabel");
+const calendarDays = document.getElementById("calendarDays");
 
-const dayPopupEl = document.getElementById("dayPopup");
-const dayPopupBackdropEl = document.getElementById("dayPopupBackdrop");
-const dayPopupTitleEl = document.getElementById("dayPopupTitle");
-const dayPopupIncomeEl = document.getElementById("dayPopupIncome");
-const dayPopupExpenseEl = document.getElementById("dayPopupExpense");
-const dayTransactionListEl = document.getElementById("dayTransactionList");
-const closeDayPopupBtn = document.getElementById("closeDayPopupBtn");
+const prevBtn = document.getElementById("prevMonthBtn");
+const nextBtn = document.getElementById("nextMonthBtn");
 
-// -----------------------------
-// 4) 작은 유틸 함수
-// -----------------------------
+const popup = document.getElementById("dayPopup");
+const popupBackdrop = document.getElementById("dayPopupBackdrop");
+const popupTitle = document.getElementById("dayPopupTitle");
+const popupIncome = document.getElementById("dayPopupIncome");
+const popupExpense = document.getElementById("dayPopupExpense");
+const popupList = document.getElementById("dayTransactionList");
+const popupCloseBtn = document.getElementById("closeDayPopupBtn");
+
 function splitDate(text) {
-  const parts = text.split("-");
-  return {
-    year: Number(parts[0]),
-    month: Number(parts[1]),
-    day: Number(parts[2]),
-  };
+  const p = text.split("-");
+  return { year: Number(p[0]), month: Number(p[1]), day: Number(p[2]) };
 }
 
-function won(amount) {
-  return `${Math.abs(amount).toLocaleString("ko-KR")}원`;
+function won(n) {
+  return `${Math.abs(n).toLocaleString("ko-KR")}원`;
 }
 
-function monthTransactions(year, monthZeroBased) {
+function getMonthList(targetYear, targetMonth) {
   const list = [];
-  for (let i = 0; i < transactions.length; i += 1) {
-    const tx = transactions[i];
-    const d = splitDate(tx.date);
-    if (d.year === year && d.month === monthZeroBased + 1) {
-      list.push(tx);
-    }
+  for (let i = 0; i < data.length; i += 1) {
+    const d = splitDate(data[i].date);
+    if (d.year === targetYear && d.month === targetMonth + 1) list.push(data[i]);
   }
   return list;
 }
 
-function totalsOf(list) {
+function getTotals(list) {
   let income = 0;
   let expense = 0;
-
   for (let i = 0; i < list.length; i += 1) {
     if (list[i].type === "income") income += list[i].amount;
     if (list[i].type === "expense") expense += list[i].amount;
   }
-
   return { income, expense };
 }
 
-function topExpenseCategoryOf(list) {
-  const categorySum = {};
-
+function getTopCategory(list) {
+  const sums = {};
   for (let i = 0; i < list.length; i += 1) {
-    const tx = list[i];
-    if (tx.type !== "expense") continue;
-
-    if (!categorySum[tx.category]) categorySum[tx.category] = 0;
-    categorySum[tx.category] += tx.amount;
+    if (list[i].type !== "expense") continue;
+    const c = list[i].category;
+    if (!sums[c]) sums[c] = 0;
+    sums[c] += list[i].amount;
   }
 
-  let maxCategory = null;
-  let maxAmount = 0;
-  const keys = Object.keys(categorySum);
-
+  let maxName = "";
+  let maxValue = 0;
+  const keys = Object.keys(sums);
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i];
-    if (categorySum[key] > maxAmount) {
-      maxAmount = categorySum[key];
-      maxCategory = key;
+    if (sums[key] > maxValue) {
+      maxValue = sums[key];
+      maxName = key;
     }
   }
-
-  if (!maxCategory) return null;
-  return { category: maxCategory, amount: maxAmount };
+  if (!maxName) return null;
+  return { name: maxName, amount: maxValue };
 }
 
-function dailySummaryOf(list) {
-  // 예: summary[8] = { income: 100000, expense: 16200, net: 83800 }
-  const summary = {};
-
+function getDaySummary(list) {
+  const out = {};
   for (let i = 0; i < list.length; i += 1) {
     const tx = list[i];
     const day = splitDate(tx.date).day;
-
-    if (!summary[day]) {
-      summary[day] = { income: 0, expense: 0, net: 0 };
-    }
-
-    if (tx.type === "income") summary[day].income += tx.amount;
-    if (tx.type === "expense") summary[day].expense += tx.amount;
-
-    summary[day].net = summary[day].income - summary[day].expense;
+    if (!out[day]) out[day] = { income: 0, expense: 0 };
+    if (tx.type === "income") out[day].income += tx.amount;
+    if (tx.type === "expense") out[day].expense += tx.amount;
   }
-
-  return summary;
+  return out;
 }
 
-// -----------------------------
-// 5) 상단 요약 영역 그리기
-// -----------------------------
-function renderSummary(list) {
-  const totals = totalsOf(list);
+function renderHeader(list) {
+  const totals = getTotals(list);
+  const prevDate = new Date(year, month - 1, 1);
+  const prevTotals = getTotals(getMonthList(prevDate.getFullYear(), prevDate.getMonth()));
+  const diff = totals.expense - prevTotals.expense;
+  const top = getTopCategory(list);
 
-  monthLabelEl.textContent = `${viewYear}년 ${viewMonth + 1}월`;
-  calendarTitleEl.textContent = `${viewYear}년 ${viewMonth + 1}월 지출/수입 캘린더`;
-  expenseTotalLabelEl.textContent = won(totals.expense);
-  incomeTotalLabelEl.textContent = won(totals.income);
-
-  // 지난달 지출과 비교
-  const prev = new Date(viewYear, viewMonth - 1, 1);
-  const prevList = monthTransactions(prev.getFullYear(), prev.getMonth());
-  const prevExpense = totalsOf(prevList).expense;
-  const diff = totals.expense - prevExpense;
+  monthLabel.textContent = `${year}년 ${month + 1}월`;
+  calendarTitle.textContent = `${year}년 ${month + 1}월 지출/수입 캘린더`;
+  expenseLabel.textContent = won(totals.expense);
+  incomeLabel.textContent = won(totals.income);
 
   if (diff > 0) {
-    monthDeltaLabelEl.innerHTML = `지난달보다 <span class="delta-up">${won(diff)}</span> 더 지출했어요.`;
+    deltaLabel.innerHTML = `지난달보다 <span class="delta-up">${won(diff)}</span> 더 지출`;
   } else if (diff < 0) {
-    monthDeltaLabelEl.innerHTML = `지난달보다 <span class="delta-down">${won(diff)}</span> 덜 지출했어요.`;
+    deltaLabel.innerHTML = `지난달보다 <span class="delta-down">${won(diff)}</span> 덜 지출`;
   } else {
-    monthDeltaLabelEl.textContent = "지난달과 같은 수준으로 지출했어요.";
+    deltaLabel.textContent = "지난달과 비슷한 지출";
   }
 
-  const top = topExpenseCategoryOf(list);
   if (top) {
-    topCategoryLabelEl.textContent = `가장 많이 쓴 항목은 "${top.category}" (${won(top.amount)}) 입니다.`;
+    topCategoryLabel.textContent = `가장 많이 쓴 항목: ${top.name} (${won(top.amount)})`;
   } else {
-    topCategoryLabelEl.textContent = "이번 달 소비 데이터가 없습니다.";
+    topCategoryLabel.textContent = "이번 달 소비 데이터 없음";
   }
 }
 
-// -----------------------------
-// 6) 달력 그리기
-// -----------------------------
-function makeCellValue(className, label, amount) {
+function makeCellValue(type, text) {
   const el = document.createElement("div");
-  el.className = `cell-value ${className}`;
-  el.textContent = `${label} ${amount.toLocaleString("ko-KR")}`;
+  el.className = `cell-value ${type}`;
+  el.textContent = text;
   return el;
 }
 
-function makeEmptyCell() {
-  const cell = document.createElement("div");
-  cell.className = "day-cell is-empty";
-  return cell;
-}
-
-function makeDayCell(day, firstDayOfWeek, dayInfo) {
-  const cell = document.createElement("div");
-  cell.className = "day-cell";
-  cell.dataset.day = String(day);
-
-  // 선택된 날짜 강조
-  if (selectedDay === day) {
-    cell.classList.add("is-selected");
-  }
-
-  // 오늘 날짜 강조
-  if (
-    viewYear === today.getFullYear() &&
-    viewMonth === today.getMonth() &&
-    day === today.getDate()
-  ) {
-    cell.classList.add("is-today");
-  }
-
-  // 날짜 숫자
-  const dayNumber = document.createElement("div");
-  dayNumber.className = "day-number";
-  dayNumber.textContent = String(day);
-
-  const weekIndex = (firstDayOfWeek + day - 1) % 7;
-  if (weekIndex === 0) dayNumber.classList.add("is-sunday");
-  if (weekIndex === 6) dayNumber.classList.add("is-saturday");
-
-  cell.appendChild(dayNumber);
-
-  // 금액 표시
-  if (dayInfo) {
-    if (dayInfo.income > 0) {
-      cell.appendChild(makeCellValue("income", "+", dayInfo.income));
-    }
-    if (dayInfo.expense > 0) {
-      cell.appendChild(makeCellValue("expense", "-", dayInfo.expense));
-    }
-    if (dayInfo.income > 0 || dayInfo.expense > 0) {
-      cell.appendChild(makeCellValue("net", "순", dayInfo.net));
-    }
-  }
-
-  return cell;
-}
-
 function renderCalendar(list) {
-  calendarDaysEl.innerHTML = "";
+  calendarDays.innerHTML = "";
 
-  const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
-  const lastDate = new Date(viewYear, viewMonth + 1, 0).getDate();
-  const summary = dailySummaryOf(list);
+  const first = new Date(year, month, 1).getDay();
+  const last = new Date(year, month + 1, 0).getDate();
+  const summary = getDaySummary(list);
 
-  // 앞쪽 빈 칸
-  for (let i = 0; i < firstDayOfWeek; i += 1) {
-    calendarDaysEl.appendChild(makeEmptyCell());
+  for (let i = 0; i < first; i += 1) {
+    const empty = document.createElement("div");
+    empty.className = "day-cell is-empty";
+    calendarDays.appendChild(empty);
   }
 
-  // 날짜 칸
-  for (let day = 1; day <= lastDate; day += 1) {
-    const dayInfo = summary[day] || null;
-    calendarDaysEl.appendChild(makeDayCell(day, firstDayOfWeek, dayInfo));
-  }
-}
+  for (let day = 1; day <= last; day += 1) {
+    const cell = document.createElement("div");
+    cell.className = "day-cell";
+    cell.dataset.day = String(day);
 
-// -----------------------------
-// 7) 날짜 팝업
-// -----------------------------
-function dayTransactions(list, day) {
-  const result = [];
-  for (let i = 0; i < list.length; i += 1) {
-    if (splitDate(list[i].date).day === day) {
-      result.push(list[i]);
+    if (year === now.getFullYear() && month === now.getMonth() && day === now.getDate()) {
+      cell.classList.add("is-today");
     }
+
+    const number = document.createElement("div");
+    number.className = "day-number";
+    number.textContent = String(day);
+
+    const w = (first + day - 1) % 7;
+    if (w === 0) number.classList.add("is-sunday");
+    if (w === 6) number.classList.add("is-saturday");
+    cell.appendChild(number);
+
+    const info = summary[day];
+    if (info) {
+      if (info.income > 0) cell.appendChild(makeCellValue("income", `+ ${info.income.toLocaleString("ko-KR")}`));
+      if (info.expense > 0) cell.appendChild(makeCellValue("expense", `- ${info.expense.toLocaleString("ko-KR")}`));
+    }
+
+    calendarDays.appendChild(cell);
   }
-  return result;
 }
 
 function openPopup(day, list) {
-  const listOfDay = dayTransactions(list, day);
-  const totals = totalsOf(listOfDay);
+  const dayList = [];
+  for (let i = 0; i < list.length; i += 1) {
+    if (splitDate(list[i].date).day === day) dayList.push(list[i]);
+  }
 
-  dayPopupTitleEl.textContent = `${viewYear}년 ${viewMonth + 1}월 ${day}일`;
-  dayPopupIncomeEl.textContent = `수입 ${won(totals.income)}`;
-  dayPopupExpenseEl.textContent = `지출 ${won(totals.expense)}`;
+  const totals = getTotals(dayList);
+  popupTitle.textContent = `${year}년 ${month + 1}월 ${day}일`;
+  popupIncome.textContent = `수입 ${won(totals.income)}`;
+  popupExpense.textContent = `지출 ${won(totals.expense)}`;
 
-  dayTransactionListEl.innerHTML = "";
-
-  if (listOfDay.length === 0) {
-    const empty = document.createElement("li");
-    empty.className = "tx-empty";
-    empty.textContent = "등록된 거래가 없습니다.";
-    dayTransactionListEl.appendChild(empty);
+  popupList.innerHTML = "";
+  if (dayList.length === 0) {
+    const li = document.createElement("li");
+    li.className = "tx-empty";
+    li.textContent = "등록된 거래가 없습니다.";
+    popupList.appendChild(li);
   } else {
-    for (let i = 0; i < listOfDay.length; i += 1) {
-      const tx = listOfDay[i];
+    for (let i = 0; i < dayList.length; i += 1) {
+      const tx = dayList[i];
+      const li = document.createElement("li");
+      li.className = "tx-item";
 
-      const item = document.createElement("li");
-      item.className = "tx-item";
-
-      const left = document.createElement("div");
-      left.className = "tx-item-left";
-
-      const type = document.createElement("span");
-      type.className = `tx-type ${tx.type}`;
-      type.textContent = tx.type === "income" ? "수입" : "지출";
-
-      const category = document.createElement("p");
-      category.className = "tx-category";
-      category.textContent = tx.category;
-
-      left.appendChild(type);
-      left.appendChild(category);
+      const cat = document.createElement("p");
+      cat.className = "tx-category";
+      cat.textContent = tx.category;
 
       const amount = document.createElement("p");
       amount.className = `tx-amount ${tx.type}`;
       amount.textContent = `${tx.type === "income" ? "+" : "-"}${tx.amount.toLocaleString("ko-KR")}원`;
 
-      item.appendChild(left);
-      item.appendChild(amount);
-      dayTransactionListEl.appendChild(item);
+      li.appendChild(cat);
+      li.appendChild(amount);
+      popupList.appendChild(li);
     }
   }
 
-  dayPopupEl.classList.add("is-open");
-  dayPopupBackdropEl.classList.add("is-open");
-  dayPopupEl.setAttribute("aria-hidden", "false");
-  dayPopupBackdropEl.setAttribute("aria-hidden", "false");
+  popup.classList.add("is-open");
+  popupBackdrop.classList.add("is-open");
 }
 
 function closePopup() {
-  dayPopupEl.classList.remove("is-open");
-  dayPopupBackdropEl.classList.remove("is-open");
-  dayPopupEl.setAttribute("aria-hidden", "true");
-  dayPopupBackdropEl.setAttribute("aria-hidden", "true");
+  popup.classList.remove("is-open");
+  popupBackdrop.classList.remove("is-open");
 }
 
-// -----------------------------
-// 8) 전체 렌더
-// -----------------------------
-function renderAll() {
-  const list = monthTransactions(viewYear, viewMonth);
-  renderSummary(list);
+function render() {
+  const list = getMonthList(year, month);
+  renderHeader(list);
   renderCalendar(list);
-
-  // 선택 날짜가 있으면 팝업 내용도 다시 맞춰줌
-  if (selectedDay !== null) {
-    openPopup(selectedDay, list);
-  }
 }
 
-// -----------------------------
-// 9) 이벤트
-// -----------------------------
-prevMonthBtn.addEventListener("click", () => {
-  viewMonth -= 1;
-  if (viewMonth < 0) {
-    viewMonth = 11;
-    viewYear -= 1;
+prevBtn.addEventListener("click", () => {
+  month -= 1;
+  if (month < 0) {
+    month = 11;
+    year -= 1;
   }
-
-  selectedDay = null;
   closePopup();
-  renderAll();
+  render();
 });
 
-nextMonthBtn.addEventListener("click", () => {
-  viewMonth += 1;
-  if (viewMonth > 11) {
-    viewMonth = 0;
-    viewYear += 1;
+nextBtn.addEventListener("click", () => {
+  month += 1;
+  if (month > 11) {
+    month = 0;
+    year += 1;
   }
-
-  selectedDay = null;
   closePopup();
-  renderAll();
+  render();
 });
 
-calendarDaysEl.addEventListener("click", (event) => {
-  const cell = event.target.closest(".day-cell");
-  if (!cell) return;
-  if (cell.classList.contains("is-empty")) return;
-
-  selectedDay = Number(cell.dataset.day);
-  if (!Number.isFinite(selectedDay)) return;
-
-  const list = monthTransactions(viewYear, viewMonth);
-  renderCalendar(list);
-  openPopup(selectedDay, list);
+calendarDays.addEventListener("click", (e) => {
+  const cell = e.target.closest(".day-cell");
+  if (!cell || cell.classList.contains("is-empty")) return;
+  const day = Number(cell.dataset.day);
+  if (!Number.isFinite(day)) return;
+  openPopup(day, getMonthList(year, month));
 });
 
-closeDayPopupBtn.addEventListener("click", () => {
-  selectedDay = null;
-  closePopup();
-  renderCalendar(monthTransactions(viewYear, viewMonth));
-});
+popupCloseBtn.addEventListener("click", closePopup);
+popupBackdrop.addEventListener("click", closePopup);
 
-dayPopupBackdropEl.addEventListener("click", () => {
-  selectedDay = null;
-  closePopup();
-  renderCalendar(monthTransactions(viewYear, viewMonth));
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    selectedDay = null;
-    closePopup();
-    renderCalendar(monthTransactions(viewYear, viewMonth));
-  }
-});
-
-// 첫 렌더
-renderAll();
+render();
