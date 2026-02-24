@@ -23,31 +23,45 @@
 }
 
 body {
-    font-family: var(--font-base);
-    color: var(--text-primary);
-    background-color: var(--bg-white);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-a {
+/* 1. header */
+/* 1-1. header - bar */
+nav{
+    background-color: var(--text-main);
+}
+ul{
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+}
+.navbar, .login-out, .download{
+    display: flex;
+    align-items: center;
+}
+li{
+    margin: 10px;
+    font-size: 13px;
+    margin:  8px 10px;
+}
+a{
     text-decoration: none;
-    color: inherit;
+    color: var(--text-white);
 }
-
-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-family: inherit;
+.logo a{
+    font-size: 27px;
+    font-weight: bold;
 }
-
-input {
-    font-family: inherit;
+.logo img{
+    width: 40px;
 }
+.logo img{
+    width: 40px;
+}/* Layout (기본 폰트, 리셋 등은 global.css에서 처리되므로 제거) */
 
-/* Layout */
 .header {
     padding: 16px 24px;
 }
@@ -60,7 +74,7 @@ input {
 .header__logo {
     font-size: 24px;
     font-weight: 700;
-    color: var(--toss-blue);
+    color: var(--color-primary); /* 글로벌 변수 적용 */
 }
 
 .main-content {
@@ -71,9 +85,14 @@ input {
     padding: 0 24px 80px 24px;
 }
 
+/* 글로벌 회색조 배경 위에서 폼이 돋보이도록 카드 형태 유지 */
 .container {
     width: 100%;
     max-width: 460px;
+    background-color: var(--bg-sub);
+    padding: 40px;
+    border-radius: var(--radius-main);
+    box-shadow: var(--shadow-md);
 }
 
 /* Typography */
@@ -85,12 +104,12 @@ input {
     font-size: 30px;
     font-weight: 700;
     margin-bottom: 8px;
-    color: var(--text-primary);
+    color: var(--text-main);
 }
 
 .title-group__sub {
     font-size: 16px;
-    color: var(--text-secondary);
+    color: var(--text-sub);
 }
 
 /* Forms */
@@ -105,20 +124,21 @@ input {
     height: 56px;
     padding: 0 16px;
     font-size: 16px;
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-lg);
-    background-color: var(--bg-input);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-main);
+    background-color: var(--bg-sub);
+    color: var(--text-main);
     outline: none;
     transition: all 0.2s ease;
 }
 
 .input-field:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 1px var(--border-focus);
+    border-color: var(--color-primary-soft);
+    box-shadow: 0 0 0 1px var(--color-primary-soft);
 }
 
 .input-field::placeholder {
-    color: var(--text-placeholder);
+    color: var(--text-muted);
 }
 
 /* Checkbox & Links */
@@ -127,7 +147,7 @@ input {
     justify-content: space-between;
     align-items: center;
     font-size: 14px;
-    color: var(--text-secondary);
+    color: var(--text-sub);
     margin-top: 16px;
 }
 
@@ -141,21 +161,21 @@ input {
 .checkbox-input {
     width: 18px;
     height: 18px;
-    accent-color: var(--toss-blue);
+    accent-color: var(--color-primary);
     cursor: pointer;
 }
 
 .text-link {
-    color: var(--text-secondary);
+    color: var(--text-sub);
     transition: color 0.2s;
 }
 
 .text-link:hover {
-    color: var(--text-primary);
+    color: var(--text-main);
 }
 
 .link-primary {
-    color: var(--toss-blue);
+    color: var(--color-primary);
     font-weight: 600;
 }
 
@@ -172,22 +192,22 @@ input {
     height: 56px;
     font-size: 16px;
     font-weight: 600;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-main);
     transition: background-color 0.2s;
 }
 
 .btn-primary {
-    background-color: var(--toss-blue);
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--text-white);
     margin-top: 24px;
 }
 
 .btn-primary:hover {
-    background-color: var(--toss-blue-hover);
+    background-color: var(--color-secondary);
 }
 
 .btn-primary:disabled {
-    background-color: #B0B8C1;
+    background-color: var(--color-primary-soft);
     cursor: not-allowed;
 }
 
@@ -196,56 +216,5 @@ input {
     margin-top: 32px;
     text-align: center;
     font-size: 15px;
-    color: var(--text-secondary);
-}
-
-/* Social Login */
-.divider {
-    margin-top: 48px;
-    position: relative;
-    text-align: center;
-}
-
-.divider::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: var(--border-default);
-    z-index: 0;
-}
-
-.divider__text {
-    position: relative;
-    padding: 0 16px;
-    background-color: var(--bg-white);
-    color: var(--text-placeholder);
-    font-size: 14px;
-    z-index: 1;
-}
-
-.social-buttons {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.btn-social {
-    background-color: white;
-    border: 1px solid var(--border-default);
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
-.btn-social:hover {
-    background-color: #F9FAFB;
-}
-
-.social-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
+    color: var(--text-sub);
 }

@@ -2,32 +2,41 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title><!DOCTYPE html>
-        <html lang="ko">
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>로그인 - Toss</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - Moment</title>
+    <link rel="stylesheet" href="css/GlobalStyle.css">
     <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<!-- Header -->
-<header class="header">
-    <div class="header__inner">
-        <h1 class="header__logo">Toss</h1>
-    </div>
+<header>
+    <section class="head-section1">
+        <nav>
+            <ul>
+                <div class="logo">
+                    <li><a href="index.html"><img src="./img/momentLogo.png" alt="">Moment</a></li>
+                </div>
+                <div class="navbar">
+                    <li><a href="calender.html">캘린더</a></li>
+                    <li><a href="household.html">가계부</a></li>
+                </div>
+                <div class="login-out">
+                    <li><a href="login.html">로그인</a></li>
+                    <li>|</li>
+                    <li><a href="signup.html">회원가입</a></li>
+                </div>
+            </ul>
+        </nav>
+    </section>
 </header>
 
-<!-- Main Content -->
 <main class="main-content">
     <div class="container">
-        <!-- Title -->
         <div class="title-group">
             <h2 class="title-group__main">안녕하세요!</h2>
             <p class="title-group__sub">이메일로 로그인해주세요</p>
         </div>
 
-        <!-- Form -->
         <form id="login-form" class="form-group">
             <input type="email" id="email" class="input-field" placeholder="이메일" required>
             <input type="password" id="password" class="input-field" placeholder="비밀번호" required>
@@ -43,43 +52,13 @@
             <button type="submit" id="login-btn" class="btn btn-primary">로그인</button>
         </form>
 
-        <!-- Footer -->
         <p class="footer-text">
             아직 회원이 아니신가요?
             <a href="signup.html" class="link-primary">회원가입</a>
         </p>
-        <!--
-
-        <div class="divider">
-            <span class="divider__text">또는</span>
-        </div>
-
-
-        <div class="social-buttons">
-            <button type="button" class="btn btn-social">
-                <svg class="social-icon" viewBox="0 0 24 24">
-                    <path fill="#03C75A" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 13.5h-7v-7h7v7z"/>
-                </svg>
-                카카오로 계속하기
-            </button>
-            <button type="button" class="btn btn-social">
-                <svg class="social-icon" viewBox="0 0 24 24">
-                    <path fill="#03C75A" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-                </svg>
-                네이버로 계속하기
-            </button>
-        </div>
-        
-        -->
     </div>
 </main>
 
 <script src="js/login.js"></script>
-</body>
-</html>
-</title>
-</head>
-<body>
-
 </body>
 </html>
