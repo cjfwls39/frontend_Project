@@ -1,6 +1,5 @@
 /* --- calender.css (Modern Stone & Charcoal Edition) --- */
 
-/* 전체 컨테이너: 따뜻한 그레이 배경(#e3dede) */
 .calender-container {
   width: 100%;
   height: 100vh;
@@ -10,7 +9,6 @@
   background-color: var(--bg-main);
 }
 
-/* --- 상단 헤더 영역 --- */
 .calendar-header {
   position: absolute;
   top: 0;
@@ -21,7 +19,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
-  background-color: var(--bg-header); /* #333030 */
+  background-color: var(--bg-header);
   box-shadow: var(--shadow-md);
   z-index: 20;
 }
@@ -31,14 +29,12 @@
   gap: 15px;
   list-style: none;
 }
-
 .menu ul li {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-main);
   transition: all 0.3s ease;
 }
-
 .menu ul li a {
   display: block;
   padding: 8px 22px;
@@ -47,9 +43,8 @@
   font-weight: 500;
   font-size: 14px;
 }
-
 .menu ul li:hover {
-  background-color: var(--color-primary-soft); /* #a3a1a1 */
+  background-color: var(--color-primary-soft);
   border-color: var(--color-primary-soft);
 }
 
@@ -63,17 +58,15 @@
   border-radius: 20px;
 }
 
-/* --- 좌측 사이드바 (미니 달력) --- */
 .calendar-left {
   width: var(--sidebar-width);
   height: 100%;
   padding: 30px 20px;
   flex-shrink: 0;
-  background-color: var(--bg-sub); /* 화이트 */
+  background-color: var(--bg-sub);
   border-right: 1px solid var(--border-light);
 }
 
-/* --- 우측 메인 영역 (대형 달력) --- */
 .calendar-right {
   flex-grow: 1;
   height: 100%;
@@ -82,7 +75,6 @@
   flex-direction: column;
 }
 
-/* 컨트롤러 영역 */
 .nav-controls {
   display: flex;
   align-items: center;
@@ -90,17 +82,11 @@
   margin-bottom: 25px;
   padding: 0 10px;
 }
-
 .calendar-Title-Year {
   font-weight: 800;
-  color: var(--text-main); /* #333030 */
+  color: var(--text-main);
   font-size: 1.6rem;
   letter-spacing: -1px;
-}
-
-.nav-btn-group {
-    display: flex;
-    gap: 8px;
 }
 
 .nav-btn {
@@ -114,16 +100,14 @@
   font-weight: 700;
   font-size: 13px;
 }
-
 .nav-btn:hover {
   background: var(--color-primary);
   color: var(--text-white);
 }
 
-/* --- 대형 달력 카드 스타일 (통합된 느낌) --- */
 .full-calendar-wrapper {
   flex-grow: 1;
-  background: var(--bg-sub); /* 화이트 카드 */
+  background: var(--bg-sub);
   border-radius: var(--radius-main);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -135,16 +119,16 @@
 .full-weeks {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  background-color: var(--bg-main); /* 연그레이 배경으로 헤더 구분 */
+  background-color: var(--bg-main);
   border-bottom: 1px solid var(--border-light);
 }
-
 .full-weeks div {
   padding: 15px 0;
   font-size: 12px;
   font-weight: 700;
-  color: var(--text-muted); /* #8b8687 */
+  color: var(--text-muted);
   text-transform: uppercase;
+  text-align: center;
 }
 
 .full-days {
@@ -153,69 +137,244 @@
   grid-auto-rows: 1fr;
   flex-grow: 1;
 }
-
 .full-days div {
-  padding: 15px;
+  padding: 10px;
   border-right: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
   color: var(--text-main);
   font-weight: 500;
   transition: background 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 100px;
+  cursor: pointer;
+}
+.full-days div:nth-child(7n) {
+  border-right: none;
+}
+.full-days div:hover {
+  background-color: rgba(227, 222, 222, 0.3);
 }
 
-.full-days div:nth-child(7n) { border-right: none; }
-.full-days div:hover { background-color: rgba(227, 222, 222, 0.3); }
-
-/* --- 미니 달력 스타일 --- */
-.mini-weeks, .mini-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
+.tx-container {
+  width: 100%;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tx-label {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 4px;
+  border-radius: 4px;
+  width: 100%;
+  text-align: right;
+}
+.tx-income-label {
+  background: rgba(92, 110, 88, 0.1);
+  color: var(--color-success);
+}
+.tx-expense-label {
+  background: rgba(140, 90, 90, 0.1);
+  color: var(--color-danger);
 }
 
+.mini-weeks,
+.mini-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
 .mini-weeks div {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 10px 0;
-    color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px 0;
+  color: var(--text-muted);
 }
-
 .mini-days div {
-    font-size: 12px;
-    padding: 12px 0;
-    cursor: pointer;
-    border-radius: 50%;
-    margin: 2px;
-    transition: 0.2s;
+  font-size: 12px;
+  padding: 12px 0;
+  cursor: pointer;
+  border-radius: 50%;
+  margin: 2px;
+  transition: 0.2s;
 }
 
-/* --- 상태별 클래스 (변수 기반) --- */
-
-/* 일요일 */
-.is-sun { color: var(--color-danger) !important; }
-
-/* 토요일 */
-.is-sat { color: var(--color-secondary) !important; }
-
-/* 오늘 날짜 (Charcoal & Stone 포인트) */
+.is-sun {
+  color: red !important;
+}
+.is-sat {
+  color: blue !important;
+}
 .is-today {
-  background-color: var(--color-primary) !important; /* #333030 */
+  background-color: var(--color-primary) !important;
   color: var(--text-white) !important;
   font-weight: 700 !important;
-  box-shadow: var(--shadow-sm);
 }
 
-/* 큰 달력에서의 오늘 날짜 추가 디테일 */
-.full-days div.is-today {
-    border-radius: 0; /* 큰 달력은 칸 전체를 채우거나 유지 */
-    position: relative;
+/* --- 모달 스타일 --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(51, 48, 48, 0.6);
+  backdrop-filter: blur(4px);
 }
 
-.full-days div.is-today::after {
-    content: 'TODAY';
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    font-size: 9px;
-    opacity: 0.7;
+.modal-content {
+  background-color: var(--bg-sub);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: var(--radius-main);
+  width: 450px;
+  max-width: 95%;
+  box-shadow: var(--shadow-md);
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  padding: 15px 25px;
+  background: var(--bg-header);
+  color: var(--text-white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--text-white);
+  cursor: pointer;
+  opacity: 0.7;
+}
+.close-btn:hover {
+  opacity: 1;
+}
+
+.modal-body {
+  padding: 20px 25px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* 폼 스타일 */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.form-row {
+  display: flex;
+  gap: 8px;
+}
+.form-row input,
+.form-row select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-main);
+  background: var(--bg-sub);
+  color: var(--text-main);
+  font-size: 13px;
+  flex: 1;
+}
+.form-row select {
+  flex: 0 0 80px;
+}
+#btnAddTx {
+  flex: 0 0 80px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+}
+
+.modal-divider {
+  border: 0;
+  border-top: 1px solid var(--border-light);
+  margin: 20px 0;
+}
+
+/* 리스트 스타일 */
+.detail-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 8px;
+  background: var(--bg-element);
+}
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.detail-category {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.detail-name {
+  font-size: 14px;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.detail-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.detail-amount {
+  font-weight: 800;
+  font-size: 14px;
+}
+.detail-amount.income {
+  color: var(--color-success);
+}
+.detail-amount.expense {
+  color: var(--color-danger);
+}
+
+.btn-delete {
+  color: var(--color-danger);
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.6;
+  transition: 0.2s;
+}
+.btn-delete:hover {
+  opacity: 1;
+  transform: scale(1.1);
 }

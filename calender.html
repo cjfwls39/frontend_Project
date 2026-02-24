@@ -4,35 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dual Calendar Project</title>
-    <link rel="stylesheet" href="css/GlobalStyle.css"> 
-    <link rel="stylesheet" href="css/calender.css">
+    <link rel="stylesheet" href="css/GlobalStyle.css" />
+    <link rel="stylesheet" href="css/calender.css" />
   </head>
   <body>
-    <!-- 최상단 메뉴 부분 -->
     <div class="calender-container">
       <div class="calendar-header">
-        <!-- 메뉴버튼 -->
         <div class="menu">
-            <ul>
-                <li><a href="index.html">← 돌아가기</a></li>
-                <li><a href="household.html">가계부</a></li>
-            </ul>
+          <ul>
+            <li><a href="index.html">← 돌아가기</a></li>
+            <li><a href="household.html">가계부</a></li>
+          </ul>
         </div>
-        
-        <!-- 시계 -->
         <div id="liveClock" class="live-clock"></div>
       </div>
 
-      <!-- 달력 왼쪽 영역 -->
       <div class="calendar-left">
         <div class="mini-calendar-wrapper">
-          <!-- 달력 상단 년월 표시 밑 버튼 부분 -->
           <div class="nav-controls">
             <button class="nav-btn btn-prev">&lt;</button>
             <h3 class="calendar-Title-Year">2026년 2월</h3>
             <button class="nav-btn btn-next">&gt;</button>
           </div>
-          <!-- 달력 부분(작은 달력) -->
           <div class="mini-weeks">
             <div>일</div>
             <div>월</div>
@@ -45,16 +38,14 @@
           <div id="miniDays" class="mini-days"></div>
         </div>
       </div>
-      <!-- 달력 오른쪽 영역 -->
+
       <div class="calendar-right">
         <div class="full-calendar-wrapper">
-          <!-- 달력 상단 년월 표시 밑 버튼 부분 -->
           <div class="nav-controls">
             <button class="nav-btn btn-prev">&lt;</button>
             <h2 class="calendar-Title-Year">2026년 2월</h2>
             <button class="nav-btn btn-next">&gt;</button>
           </div>
-          <!-- 달력 부분(커다란 달력) -->
           <div class="full-weeks">
             <div>일</div>
             <div>월</div>
@@ -68,6 +59,43 @@
         </div>
       </div>
     </div>
+
+    <div id="txModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalDateTitle">2026-02-24</h3>
+          <button class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-section-title">새 내역 추가</div>
+          <div class="modal-form">
+            <div class="form-row">
+              <select id="txType">
+                <option value="expense">지출</option>
+                <option value="income">수입</option>
+              </select>
+              <input
+                type="text"
+                id="txCategory"
+                placeholder="카테고리 (예: 식비)"
+              />
+            </div>
+            <div class="form-row">
+              <input type="number" id="txAmount" placeholder="금액 입력" />
+              <button id="btnAddTx" class="nav-btn">추가</button>
+            </div>
+          </div>
+
+          <hr class="modal-divider" />
+
+          <div class="modal-section-title">상세 내역</div>
+          <ul id="modalTxList" class="detail-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/transactionStorage.js"></script>
     <script src="js/calendar.js"></script>
   </body>
 </html>
