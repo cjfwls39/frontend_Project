@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/GlobalStyle.css">
     <link rel="stylesheet" href="css/intro.css">
+    <script src="./js/authSession.js" defer></script>
     <script src="./js/main.js" defer></script>
     <script src="js/intro.js"></script>
     <title>Toss</title>
@@ -30,11 +31,15 @@
                 <div class="navbar">
                     <li><a href="calender.html">캘린더</a></li>
                     <li><a href="household.html">가계부</a></li>
+                    <li><a href="accounts.html">계좌</a></li>
                 </div>
                 <div class="login-out">
-                    <li><a href="login.html">로그인</a></li>
-                    <li>|</li>
-                    <li><a href="signup.html">회원가입</a></li>
+                    <li id="indexLoginItem"><a href="login.html">로그인</a></li>
+                    <li id="indexAuthDivider">|</li>
+                    <li id="indexSignupItem"><a href="signup.html">회원가입</a></li>
+                    <li id="indexCurrentUserItem" hidden>사용자: <strong id="indexCurrentUserLabel">demo</strong></li>
+                    <li id="indexLogoutDivider" hidden>|</li>
+                    <li id="indexLogoutItem" hidden><a href="#" id="indexLogoutBtn">로그아웃</a></li>
                 </div>
             </ul>
         </nav>

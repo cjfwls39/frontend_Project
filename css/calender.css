@@ -63,6 +63,32 @@
   border-radius: 20px;
 }
 
+.calendar-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calendar-user {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.calendar-logout-btn {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-white);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-logout-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 /* 좌측 사이드바 */
 .calendar-left {
   width: var(--sidebar-width);

@@ -6,6 +6,9 @@
     <title>가계부</title>
     <link rel="stylesheet" href="css/GlobalStyle.css" />
     <link rel="stylesheet" href="css/household.css" />
+    <script src="js/authSession.js" defer></script>
+    <script src="js/storageUtil.js" defer></script>
+    <script src="js/accountStorage.js" defer></script>
     <script src="js/transactionStorage.js" defer></script>
     <script src="js/household.js" defer></script>
   </head>
@@ -17,9 +20,14 @@
             <li><a href="index.html">메인</a></li>
             <li><a href="calender.html">캘린더</a></li>
             <li><a href="household.html">가계부</a></li>
+            <li><a href="accounts.html">계좌</a></li>
           </ul>
         </nav>
-        <div class="header-title">가계부 대시보드</div>
+        <div class="header-actions">
+          <div class="header-title">가계부 대시보드</div>
+          <p class="header-user">사용자: <strong id="currentUserLabel">demo</strong></p>
+          <button type="button" id="logoutBtn" class="logout-btn" hidden>로그아웃</button>
+        </div>
       </header>
 
       <aside class="household-left">
@@ -72,6 +80,12 @@
           <p id="topCategoryLabel">가장 많이 쓴 카테고리를 분석 중입니다.</p>
         </section>
 
+        <section class="transfer-card">
+          <h3>계좌 이동 연동</h3>
+          <p id="transferSummaryLabel" class="transfer-summary">이번 달 계좌 이동 내역을 불러오는 중입니다.</p>
+          <ul id="transferRecentList" class="transfer-recent-list"></ul>
+        </section>
+
         <section class="legend-card">
           <h3>표시 기준</h3>
           <div class="legend-row"><span class="dot income"></span> 수입</div>
@@ -82,7 +96,7 @@
 
       <section class="household-right">
         <div class="calendar-header-row">
-          <h2 id="calendarTitle">2026년 2월 지출/수입 캘린더</h2>
+          <h2 id="calendarTitle">2026년 2월 지출/수입/순이동 캘린더</h2>
         </div>
         <div class="week-header">
           <span>일</span>

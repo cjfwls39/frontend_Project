@@ -16,6 +16,8 @@ const txTypeInput = document.getElementById("txType");
 const txCategoryInput = document.getElementById("txCategory");
 const txAmountInput = document.getElementById("txAmount");
 const btnAddTx = document.getElementById("btnAddTx");
+const currentUserLabel = document.getElementById("currentUserLabel");
+const logoutBtn = document.getElementById("logoutBtn");
 
 const calendarState = {
     year: new Date().getFullYear(),
@@ -183,6 +185,33 @@ function moveMonth(){
     });
 }
 
+function renderAuthState() {
+    if (!currentUserLabel) return;
+
+    if (!window.AuthSession || typeof window.AuthSession.getCurrentUserId !== "function") {
+        currentUserLabel.textContent = "demo";
+        if (logoutBtn) logoutBtn.hidden = true;
+        return;
+    }
+
+    const userId = window.AuthSession.getCurrentUserId();
+    const isLoggedIn =
+        typeof window.AuthSession.hasCurrentUserId === "function" && window.AuthSession.hasCurrentUserId();
+
+    currentUserLabel.textContent = userId;
+    if (logoutBtn) logoutBtn.hidden = !isLoggedIn;
+}
+
+function bindAuthActions() {
+    if (!logoutBtn) return;
+    logoutBtn.addEventListener("click", () => {
+        if (window.AuthSession && typeof window.AuthSession.clearCurrentUserId === "function") {
+            window.AuthSession.clearCurrentUserId();
+        }
+        window.location.href = "login.html";
+    });
+}
+
 closeBtn.onclick = () => txModal.style.display = "none";
 window.onclick = (e) => { if (e.target == txModal) txModal.style.display = "none"; };
 
@@ -190,6 +219,8 @@ window.onclick = (e) => { if (e.target == txModal) txModal.style.display = "none
 window.addEventListener('resize', renderCalendar);
 
 // 초기화
+bindAuthActions();
+renderAuthState();
 renderCalendar();
 moveMonth();
 

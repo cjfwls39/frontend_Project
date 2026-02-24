@@ -1,4 +1,52 @@
 const targets = document.querySelectorAll(".main-section2");
+
+function bindIndexAuthMenu() {
+  const loginItem = document.getElementById("indexLoginItem");
+  const signupItem = document.getElementById("indexSignupItem");
+  const authDivider = document.getElementById("indexAuthDivider");
+  const currentUserItem = document.getElementById("indexCurrentUserItem");
+  const currentUserLabel = document.getElementById("indexCurrentUserLabel");
+  const logoutItem = document.getElementById("indexLogoutItem");
+  const logoutDivider = document.getElementById("indexLogoutDivider");
+  const logoutBtn = document.getElementById("indexLogoutBtn");
+
+  if (!loginItem || !signupItem || !authDivider || !currentUserItem || !logoutItem || !logoutDivider || !logoutBtn) {
+    return;
+  }
+
+  const hasAuth =
+    window.AuthSession &&
+    typeof window.AuthSession.hasCurrentUserId === "function" &&
+    window.AuthSession.hasCurrentUserId();
+
+  if (hasAuth) {
+    const userId = window.AuthSession.getCurrentUserId();
+    if (currentUserLabel) currentUserLabel.textContent = userId;
+    loginItem.hidden = true;
+    signupItem.hidden = true;
+    authDivider.hidden = true;
+    currentUserItem.hidden = false;
+    logoutDivider.hidden = false;
+    logoutItem.hidden = false;
+  } else {
+    loginItem.hidden = false;
+    signupItem.hidden = false;
+    authDivider.hidden = false;
+    currentUserItem.hidden = true;
+    logoutDivider.hidden = true;
+    logoutItem.hidden = true;
+  }
+
+  logoutBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (window.AuthSession && typeof window.AuthSession.clearCurrentUserId === "function") {
+      window.AuthSession.clearCurrentUserId();
+    }
+    window.location.href = "login.html";
+  });
+}
+
+bindIndexAuthMenu();
   
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {

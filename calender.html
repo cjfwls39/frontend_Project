@@ -14,9 +14,14 @@
           <ul>
             <li><a href="index.html">메인</a></li>
             <li><a href="household.html">가계부</a></li>
+            <li><a href="accounts.html">계좌</a></li>
           </ul>
         </div>
-        <div id="liveClock" class="live-clock"></div>
+        <div class="calendar-header-right">
+          <div id="liveClock" class="live-clock"></div>
+          <p class="calendar-user">사용자: <strong id="currentUserLabel">demo</strong></p>
+          <button type="button" id="logoutBtn" class="calendar-logout-btn" hidden>로그아웃</button>
+        </div>
       </div>
 
       <div class="calendar-left">
@@ -95,6 +100,7 @@
       </div>
     </div>
 
+    <script src="js/authSession.js"></script>
     <script src="js/transactionStorage.js"></script>
     <script src="js/calendar.js"></script>
   </body>

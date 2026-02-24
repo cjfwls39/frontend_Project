@@ -27,6 +27,10 @@ const txTypeInput = document.getElementById("txTypeInput");
 const txCategoryInput = document.getElementById("txCategoryInput");
 const txAmountInput = document.getElementById("txAmountInput");
 const txFormMessage = document.getElementById("txFormMessage");
+const transferSummaryLabel = document.getElementById("transferSummaryLabel");
+const transferRecentList = document.getElementById("transferRecentList");
+const currentUserLabel = document.getElementById("currentUserLabel");
+const logoutBtn = document.getElementById("logoutBtn");
 
 const CATEGORY_MAP = {
   expense: ["식비", "카페", "교통", "쇼핑", "주거/통신", "의료/건강", "여가", "기타"],
@@ -42,6 +46,13 @@ function won(n) {
   return `${Math.abs(n).toLocaleString("ko-KR")}원`;
 }
 
+function signedAmountText(n) {
+  const abs = Math.abs(n).toLocaleString("ko-KR");
+  if (n > 0) return `+ ${abs}`;
+  if (n < 0) return `- ${abs}`;
+  return "0";
+}
+
 function getAllTransactions() {
   if (!window.TransactionStorage) return [];
   return window.TransactionStorage.getAll();
@@ -55,6 +66,45 @@ function getMonthList(targetYear, targetMonth) {
     if (d.year === targetYear && d.month === targetMonth + 1) list.push(all[i]);
   }
   return list;
+}
+
+function getMonthTransfers(targetYear, targetMonth) {
+  if (!window.AccountStorage || typeof window.AccountStorage.getTransfers !== "function") return [];
+  const all = window.AccountStorage.getTransfers();
+  const start = new Date(targetYear, targetMonth, 1).getTime();
+  const end = new Date(targetYear, targetMonth + 1, 1).getTime();
+  const list = [];
+
+  for (let i = 0; i < all.length; i += 1) {
+    const createdAt = new Date(all[i].createdAt).getTime();
+    if (!Number.isFinite(createdAt)) continue;
+    if (createdAt >= start && createdAt < end) list.push(all[i]);
+  }
+  return list;
+}
+
+function getAccountNameMap() {
+  const map = new Map();
+  if (!window.AccountStorage || typeof window.AccountStorage.getAccounts !== "function") {
+    return map;
+  }
+
+  const accounts = window.AccountStorage.getAccounts();
+  for (let i = 0; i < accounts.length; i += 1) {
+    map.set(accounts[i].id, accounts[i].name);
+  }
+  return map;
+}
+
+function formatDateTime(isoText) {
+  const date = new Date(isoText);
+  if (Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleString("ko-KR", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function getTotals(list) {
@@ -110,7 +160,7 @@ function renderHeader(list) {
   const top = getTopCategory(list);
 
   monthLabel.textContent = `${year}년 ${month + 1}월`;
-  calendarTitle.textContent = `${year}년 ${month + 1}월 지출/수입 캘린더`;
+  calendarTitle.textContent = `${year}년 ${month + 1}월 지출/수입/순이동 캘린더`;
   expenseLabel.textContent = won(totals.expense);
   incomeLabel.textContent = won(totals.income);
 
@@ -127,6 +177,81 @@ function renderHeader(list) {
   } else {
     topCategoryLabel.textContent = "이번 달 소비 데이터가 없습니다.";
   }
+}
+
+function renderTransferLinkage() {
+  if (!transferSummaryLabel || !transferRecentList) return;
+
+  if (!window.AccountStorage || typeof window.AccountStorage.getTransfers !== "function") {
+    transferSummaryLabel.textContent = "계좌 이동 데이터를 불러올 수 없습니다.";
+    transferRecentList.innerHTML = '<li class="transfer-empty">연동 모듈이 준비되지 않았습니다.</li>';
+    return;
+  }
+
+  const monthTransfers = getMonthTransfers(year, month);
+  const monthOut = monthTransfers.reduce((sum, transfer) => sum + transfer.amount, 0);
+  transferSummaryLabel.textContent = `${year}년 ${month + 1}월 총 이동 ${won(monthOut)} · ${
+    monthTransfers.length
+  }건`;
+
+  const accountNameMap = getAccountNameMap();
+
+  const recentTransfers = window.AccountStorage.getTransfers().slice(0, 5);
+  transferRecentList.innerHTML = "";
+
+  if (recentTransfers.length === 0) {
+    transferRecentList.innerHTML = '<li class="transfer-empty">최근 계좌 이동 내역이 없습니다.</li>';
+    return;
+  }
+
+  for (let i = 0; i < recentTransfers.length; i += 1) {
+    const transfer = recentTransfers[i];
+    const row = document.createElement("li");
+    row.className = "transfer-row";
+
+    const route = document.createElement("p");
+    route.className = "transfer-row-route";
+    route.textContent = `${accountNameMap.get(transfer.fromAccountId) || transfer.fromAccountId} → ${
+      accountNameMap.get(transfer.toAccountId) || transfer.toAccountId
+    }`;
+
+    const meta = document.createElement("p");
+    meta.className = "transfer-row-meta";
+    meta.textContent = formatDateTime(transfer.createdAt);
+
+    const amount = document.createElement("p");
+    amount.className = "transfer-row-amount";
+    amount.textContent = `${won(transfer.amount)} 이동`;
+
+    row.appendChild(route);
+    row.appendChild(meta);
+    row.appendChild(amount);
+
+    if (transfer.memo) {
+      const memo = document.createElement("p");
+      memo.className = "transfer-row-memo";
+      memo.textContent = `메모: ${transfer.memo}`;
+      row.appendChild(memo);
+    }
+
+    transferRecentList.appendChild(row);
+  }
+}
+
+function renderAuthState() {
+  if (!currentUserLabel) return;
+
+  if (!window.AuthSession || typeof window.AuthSession.getCurrentUserId !== "function") {
+    currentUserLabel.textContent = "demo";
+    if (logoutBtn) logoutBtn.hidden = true;
+    return;
+  }
+
+  const userId = window.AuthSession.getCurrentUserId();
+  const isLoggedIn =
+    typeof window.AuthSession.hasCurrentUserId === "function" && window.AuthSession.hasCurrentUserId();
+  currentUserLabel.textContent = userId;
+  if (logoutBtn) logoutBtn.hidden = !isLoggedIn;
 }
 
 function makeCellValue(type, text) {
@@ -171,6 +296,7 @@ function renderCalendar(list) {
     if (info) {
       if (info.income > 0) cell.appendChild(makeCellValue("income", `+ ${info.income.toLocaleString("ko-KR")}`));
       if (info.expense > 0) cell.appendChild(makeCellValue("expense", `- ${info.expense.toLocaleString("ko-KR")}`));
+      cell.appendChild(makeCellValue("net", `= ${signedAmountText(info.income - info.expense)}`));
     }
 
     calendarDays.appendChild(cell);
@@ -225,8 +351,10 @@ function closePopup() {
 
 function render() {
   const list = getMonthList(year, month);
+  renderAuthState();
   renderHeader(list);
   renderCalendar(list);
+  renderTransferLinkage();
 }
 
 function showFormMessage(text, isError) {
@@ -311,6 +439,16 @@ function bindTransactionForm() {
   });
 }
 
+function bindAuthActions() {
+  if (!logoutBtn) return;
+  logoutBtn.addEventListener("click", () => {
+    if (window.AuthSession && typeof window.AuthSession.clearCurrentUserId === "function") {
+      window.AuthSession.clearCurrentUserId();
+    }
+    window.location.href = "login.html";
+  });
+}
+
 prevBtn.addEventListener("click", () => {
   month -= 1;
   if (month < 0) {
@@ -342,5 +480,6 @@ calendarDays.addEventListener("click", (e) => {
 popupCloseBtn.addEventListener("click", closePopup);
 popupBackdrop.addEventListener("click", closePopup);
 
+bindAuthActions();
 bindTransactionForm();
 render();

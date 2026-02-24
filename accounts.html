@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>계좌 - Toss</title>
+    <link rel="stylesheet" href="css/GlobalStyle.css" />
+    <link rel="stylesheet" href="css/accounts.css" />
+    <script src="js/authSession.js" defer></script>
+    <script src="js/storageUtil.js" defer></script>
+    <script src="js/accountStorage.js" defer></script>
+    <script src="js/accounts.js" defer></script>
+  </head>
+  <body>
+    <main class="accounts-container">
+      <header class="accounts-header">
+        <nav class="menu" aria-label="주요 메뉴">
+          <ul>
+            <li><a href="index.html">메인</a></li>
+            <li><a href="calender.html">캘린더</a></li>
+            <li><a href="household.html">가계부</a></li>
+            <li><a href="accounts.html">계좌</a></li>
+          </ul>
+        </nav>
+        <h1 class="page-title">내 계좌</h1>
+        <div class="header-actions">
+          <p class="user-label">현재 사용자: <strong id="currentUserLabel">demo</strong></p>
+          <button type="button" id="logoutBtn" class="logout-btn" hidden>로그아웃</button>
+        </div>
+      </header>
+
+      <section class="accounts-main">
+        <section class="panel accounts-panel" aria-labelledby="accountsHeading">
+          <h2 id="accountsHeading">계좌 목록</h2>
+          <ul id="accountList" class="account-list"></ul>
+        </section>
+
+        <section class="panel transfer-panel" aria-labelledby="transferHeading">
+          <h2 id="transferHeading">계좌 간 이체</h2>
+          <form id="transferForm" class="transfer-form">
+            <div class="transfer-field">
+              <label for="fromAccountId">출금 계좌</label>
+              <select id="fromAccountId" name="fromAccountId" required></select>
+            </div>
+            <div class="transfer-field">
+              <label for="toAccountId">입금 계좌</label>
+              <select id="toAccountId" name="toAccountId" required></select>
+            </div>
+            <div class="transfer-field">
+              <label for="transferAmount">금액</label>
+              <input id="transferAmount" name="amount" type="number" min="1" step="1" placeholder="0" required />
+            </div>
+            <div class="transfer-field">
+              <label for="transferMemo">메모 (선택)</label>
+              <input id="transferMemo" name="memo" type="text" maxlength="30" placeholder="예: 저축" />
+            </div>
+            <button id="transferSubmitBtn" class="transfer-submit-btn" type="submit">이체하기</button>
+            <p id="transferDisabledHint" class="transfer-disabled-hint" hidden>
+              이체하려면 계좌가 2개 이상 필요합니다.
+            </p>
+            <p id="transferFormMessage" class="form-message" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="panel recent-panel" aria-labelledby="recentHeading">
+          <h2 id="recentHeading">최근 이체 (최대 5건)</h2>
+          <ul id="recentTransferList" class="recent-transfer-list"></ul>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
